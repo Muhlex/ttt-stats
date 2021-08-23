@@ -2,7 +2,7 @@
 	import { Router, Link } from "svelte-navigator";
 </script>
 
-<Router>
+<Router basepath={import.meta.env.BASE_URL}>
 	<nav>
 		<Link to="/">Overview</Link>
 		<Link to="/players">Player Stats</Link>

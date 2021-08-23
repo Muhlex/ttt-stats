@@ -31,7 +31,7 @@
 
 		<Filters bind:filters />
 		{#if rounds}
-		<Router>
+		<Router basepath={import.meta.env.BASE_URL}>
 			<Route path="/">
 				<Overview rounds={rounds} />
 			</Route>
