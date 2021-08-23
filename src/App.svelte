@@ -5,7 +5,7 @@
 	import { Router, Route } from "svelte-navigator";
 
 	import Loading from "./components/Loading.svelte";
-	import Navigation from "./components/Navigation.svelte";
+	import Nav from "./components/Nav.svelte";
 	import Filters from "./components/Filters.svelte";
 	import Overview from "./pages/Overview.svelte";
 	import Players from "./pages/Players.svelte";
@@ -26,22 +26,22 @@
 {#if loading}
 	<Loading />
 {:else}
-	<main>
-		<h1>Trouble in Terrorist Town &mdash; Statistics</h1>
+	<Router basepath={import.meta.env.BASE_URL}>
+		<main>
+			<h1>Trouble in Terrorist Town &mdash; Statistics</h1>
 
-		<Filters bind:filters />
-		{#if rounds}
-		<Router basepath={import.meta.env.BASE_URL}>
-			<Route path="/">
-				<Overview rounds={rounds} />
-			</Route>
-			<Route path="/players">
-				<Players />
-			</Route>
-		</Router>
-		{/if}
-	</main>
-	<Navigation />
+			<Filters bind:filters />
+			{#if rounds}
+				<Route path="/">
+					<Overview rounds={rounds} />
+				</Route>
+				<Route path="/players">
+					<Players />
+				</Route>
+				{/if}
+			</main>
+		<Nav />
+	</Router>
 {/if}
 
 <style>
