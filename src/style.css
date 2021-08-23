@@ -1,0 +1,53 @@
+:root {
+	--text: #222;
+	--bg: #fff;
+	--bg1: #efeff7;
+	--accent: #5e5e85;
+	--hover: #6868b1;
+	--active: #4242a3;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--text: #fff;
+		--bg: #202030;
+		--bg1: #303040;
+		--accent: #5b5b8b;
+		--hover: #6868b1;
+		--active: #9494ff;
+	}
+}
+
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+html {
+	font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui,
+		helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
+	color: var(--text);
+	background-color: var(--bg);
+}
+
+body {
+	margin: 0;
+	overflow-y: scroll;
+}
+
+#app {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+input, select {
+	font-family: inherit;
+}
+
+h1:focus, h2:focus, h3:focus, h4:focus, h5:focus, h6:focus {
+	/* Svelte Navigator focuses headlines for accessibility. */
+	outline: none;
+}
