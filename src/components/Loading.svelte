@@ -1,5 +1,5 @@
 <div>
-	Loading Data...
+	<slot />
 </div>
 
 <style>

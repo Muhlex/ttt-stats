@@ -4,7 +4,7 @@
 	export let to;
 
 	function getProps({ href, isPartiallyCurrent, isCurrent }) {
-		const isActive = href === import.meta.env.BASE_URL ? isCurrent : isPartiallyCurrent || isCurrent;
+		const isActive = href === "/" ? isCurrent : isPartiallyCurrent || isCurrent;
 
 		// The object returned here is spread on the anchor element's attributes
 		if (isActive) return { class: "active" };

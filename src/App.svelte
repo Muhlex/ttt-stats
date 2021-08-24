@@ -2,7 +2,8 @@
 	import { fetchData } from "./js/data";
 	import { filterRounds } from "./js/eval";
 
-	import { Router, Route } from "svelte-navigator";
+	import { Router, Route, createHistory } from "svelte-navigator";
+	import createHashSource from "./js/hashHistory";
 
 	import Loading from "./components/Loading.svelte";
 	import Nav from "./components/Nav.svelte";
@@ -10,23 +11,23 @@
 	import Overview from "./pages/Overview.svelte";
 	import Players from "./pages/Players.svelte";
 
-	let loading = true;
+	const hashHistory = createHistory(createHashSource());
+
 	let data;
 	let filters;
 
-	(async () => {
-		data = await fetchData();
-		// TODO: Handle error
-		loading = false;
-	})();
+	const promise = fetchData();
+	promise
+		.then(result => (data = result))
+		.catch(error => console.error(error));
 
 	$: rounds = data && filters && filterRounds(data.rounds, filters);
 </script>
 
-{#if loading}
-	<Loading />
-{:else}
-	<Router basepath={import.meta.env.BASE_URL}>
+{#await promise}
+	<Loading>Loading data...</Loading>
+{:then}
+	<Router history={hashHistory}>
 		<main>
 			<h1>Trouble in Terrorist Town &mdash; Statistics</h1>
 
@@ -38,11 +39,13 @@
 				<Route path="/players">
 					<Players />
 				</Route>
-				{/if}
-			</main>
+			{/if}
+		</main>
 		<Nav />
 	</Router>
-{/if}
+{:catch error}
+	<Loading>Error loading statistics data:<br>{error}</Loading>
+{/await}
 
 <style>
 main {

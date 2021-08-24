@@ -19,7 +19,7 @@ jobs:
     - name: Setup Node.js for use with actions
       uses: actions/setup-node@v1.4.4
       with:
-        version: '14.x'
+        node-version: '14.x'
     - run: npm ci
     - run: npm run build -- --base=/ttt-stats/
 
