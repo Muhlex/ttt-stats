@@ -3,15 +3,18 @@
 	const startDay = new Date();
 	startDay.setMonth(startDay.getMonth() - 2);
 
-	const defaultMinDate = startDay.toISOString().split("T")[0];
-	const defaultMaxDate = today.toISOString().split("T")[0];
+	const defaultMinDateString = startDay.toISOString().split("T")[0];
+	const defaultMaxDateString = today.toISOString().split("T")[0];
 
 	export let filters = {
 		minPlayers: 6,
 		maxPlayers: 18,
-		minDate: new Date(defaultMinDate),
-		maxDate: new Date(defaultMaxDate)
+		minDate: new Date(defaultMinDateString).setUTCHours(0, 0, 0, 0),
+		maxDate: new Date(defaultMaxDateString).setUTCHours(23, 59, 59, 999)
 	};
+
+	$: minDateString = filters.minDate && new Date(filters.minDate).toISOString().split("T")[0];
+	$: maxDateString = filters.maxDate && new Date(filters.maxDate).toISOString().split("T")[0];
 </script>
 
 <div class="filters">
@@ -52,20 +55,32 @@
 			<input
 				id="filter-min-date"
 				type="date"
-				max={defaultMaxDate}
-				value={defaultMinDate}
+				max={defaultMaxDateString}
+				value={minDateString}
 				on:input={({ target: { value } }) => {
-					filters.minDate = new Date(value);
+					filters.minDate = new Date(value).setUTCHours(0, 0, 0, 0);
+					if (value) {
+						filters.maxDate = Math.max(
+							new Date(value).setUTCHours(23, 59, 59, 999),
+							filters.maxDate
+						);
+					}
 				}}
 			>
 			<label for="filter-max-players">and</label>
 			<input
 				id="filter-max-date"
 				type="date"
-				max={defaultMaxDate}
-				value={defaultMaxDate}
+				max={defaultMaxDateString}
+				value={maxDateString}
 				on:input={({ target: { value } }) => {
-					filters.maxDate = new Date(value);
+					filters.maxDate = new Date(value).setUTCHours(23, 59, 59, 999);
+					if (value) {
+						filters.minDate = Math.min(
+							new Date(value).setUTCHours(0, 0, 0, 0),
+							filters.minDate
+						);
+					}
 				}}
 			>
 		</div>
