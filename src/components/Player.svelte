@@ -61,7 +61,7 @@
 			playtime.detective,
 			playtime.innocent + playtime.detective,
 			playtime.any
-		].map(value => `${(value / 60 / 60).toFixed(1)} hours`)
+		].map(value => `${(value / 60 / 60).toFixed(1)} h`)
 	}, {
 		key: "Kills",
 		row: [
@@ -217,16 +217,26 @@
 	}
 
 	table {
+		border-collapse: collapse;
 		flex-shrink: 0;
 		margin-bottom: 1em;
+		margin-right: 1em;
 	}
 
+	table td,
+	table th {
+		padding: 0.4em 1.2em;
+	}
+	table td:nth-child(even),
+	table th:nth-child(even) {
+		background-color: var(--bg1);
+	}
 	table td {
-		padding: 0.2em 1em;
 		text-align: center;
 	}
 	table th[scope=row] {
 		padding: 0;
+		padding-right: 0.5em;
 		text-align: right;
 		font-weight: 600;
 	}
