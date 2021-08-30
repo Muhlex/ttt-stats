@@ -3,8 +3,11 @@
 	--bg: #fff;
 	--bg1: #efeff7;
 	--accent: #5e5e85;
-	--hover: #6868b1;
+	--hover: #8282f7;
 	--active: #4242a3;
+	--i: #4bc078;
+	--t: #ff6384;
+	--d: #36a2eb;
 }
 @media (prefers-color-scheme: dark) {
 	:root {
@@ -12,7 +15,7 @@
 		--bg: #202030;
 		--bg1: #303040;
 		--accent: #5b5b8b;
-		--hover: #6868b1;
+		--hover: #7474c2;
 		--active: #9494ff;
 	}
 }
@@ -43,11 +46,20 @@ body {
 	align-items: center;
 }
 
-input, select {
+input, button, select {
 	font-family: inherit;
 }
 
 h1:focus, h2:focus, h3:focus, h4:focus, h5:focus, h6:focus {
 	/* Svelte Navigator focuses headlines for accessibility. */
 	outline: none;
+}
+
+h1:first-child,
+h2:first-child,
+h3:first-child,
+h4:first-child,
+h5:first-child,
+h6:first-child {
+	margin-top: 0;
 }

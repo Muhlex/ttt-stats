@@ -121,7 +121,7 @@ module.exports = {
 		"max-len": ["warn", { "code": 100, "tabWidth": 2 }],
 		"new-cap": ["error", { "newIsCap": true, "capIsNew": true }],
 		"new-parens": ["error", "always"],
-		"newline-per-chained-call": ["warn", { "ignoreChainWithDepth": 3 }],
+		// "newline-per-chained-call": ["warn", { "ignoreChainWithDepth": 3 }],
 		"no-array-constructor": "error",
 		"no-lonely-if": "error",
 		"no-mixed-operators": "warn",

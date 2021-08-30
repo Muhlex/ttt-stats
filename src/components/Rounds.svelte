@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from "svelte";
 
-	import { toReadableMinutes } from "../js/util";
+	import { toMMSS } from "../js/util";
 	import Chart from "chart.js/auto";
 
 	export let roundTotals;
@@ -14,7 +14,7 @@
 		value: roundTotals.rounds
 	}, {
 		key: "Average round length",
-		value: toReadableMinutes(roundTotals.playtime / roundTotals.rounds)
+		value: toMMSS(roundTotals.playtime / roundTotals.rounds)
 	}, {
 		key: "Innocent Wins",
 		value: (
@@ -74,7 +74,7 @@
 	<table>
 		{#each tableData as { key, value }}
 		<tr>
-			<th>{key}</th>
+			<th scope="row">{key}</th>
 			<td>{value}</td>
 		</tr>
 		{/each}
@@ -89,8 +89,14 @@
 	.chart {
 		width: 360px;
 	}
-	table th {
+
+	table td {
+		padding: 0;
+		padding-left: 0.5em;
+	}
+	table th[scope=row] {
 		text-align: right;
-		padding-right: 0.5em;
+		padding: 0;
+		font-weight: 600;
 	}
 </style>

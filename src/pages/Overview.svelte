@@ -11,8 +11,8 @@
 	export let rounds;
 
 	$: roundTotals = rounds && getRoundTotals(rounds);
-	$: items = rounds && groupBy("role", getItemCounts(rounds.flatMap(({ items }) => items)));
+	$: items = rounds && groupBy("role", getItemCounts(rounds));
 </script>
 
-<Rounds roundTotals={roundTotals}/>
-<Items items={items}/>
+<Rounds {roundTotals} />
+<Items {items} />

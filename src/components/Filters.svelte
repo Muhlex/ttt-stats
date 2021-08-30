@@ -1,7 +1,7 @@
 <script>
 	const today = new Date();
 	const startDay = new Date();
-	startDay.setMonth(startDay.getMonth() - 2);
+	startDay.setMonth(startDay.getMonth() - 3);
 
 	const defaultMinDateString = startDay.toISOString().split("T")[0];
 	const defaultMaxDateString = today.toISOString().split("T")[0];
@@ -96,9 +96,6 @@
 		padding: 1em;
 		background-color: var(--bg1);
 		border: 2px solid var(--accent);
-	}
-	.filters *:first-child {
-		margin-top: 0;
 	}
 
 	.filter-groups {

@@ -1,10 +1,10 @@
 <script>
-	import NavLink from "./NavLink.svelte";
+	import Link from "./Link.svelte";
 </script>
 
 <nav>
-	<NavLink to="/">Overview</NavLink>
-	<NavLink to="/players">Player Stats</NavLink>
+	<Link to="/">Overview</Link>
+	<Link to="/players">Player Stats</Link>
 </nav>
 
 <style>
@@ -17,5 +17,23 @@
 		display: flex;
 		justify-content: center;
 		background-color: var(--bg1);
+	}
+	nav :global(a) {
+		padding: 1em 2em;
+		color: var(--text);
+		text-decoration: none;
+		font-weight: 600;
+		font-size: 1.2em;
+
+		transition: 300ms ease;
+		transition-property: box-shadow, color;
+	}
+	nav :global(a):hover,
+	nav :global(a):focus {
+		color: var(--hover);
+	}
+	nav :global(a.active) {
+		color: var(--active);
+		box-shadow: inset 0 -0.5em 0 0 var(--active);
 	}
 </style>

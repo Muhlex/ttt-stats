@@ -1,50 +1,86 @@
+function logTimeToSeconds(timeString) {
+	const [min, sec] = timeString.split(":");
+	return (Number(min) * 60) + Number(sec);
+}
+
 export function getDate(text) {
-	const timestamp = text.match(/TTT_ROUND_START;\d*;\d*;\d*;(\d+)/);
-	if (!timestamp) return null;
-	else return new Date(Number(timestamp[1]) * 1000);
+	const result = text.match(/\n *\d*:\d* TTT_ROUND_START;(\d+)/);
+	if (!result) return null;
+
+	else return new Date(Number(result[1]) * 1000);
 }
 
-export function getPlayerCounts(text) {
-	let playerCounts = text.match(/TTT_ROUND_START;(\d*);(\d*);(\d*)/);
-	if (!playerCounts) return null;
-	playerCounts = playerCounts.slice(1).map(count => Number(count));
-	if (playerCounts[0] < 1) return null;
+export function getPlayers(text, playerMap) {
+	const result = text.match(/\n *\d*:\d* TTT_PLAYERS;(.*)\n/);
+	if (!result) return [];
 
-	return {
-		total: playerCounts[0],
-		innocent: playerCounts[0] - playerCounts[1] - playerCounts[2],
-		traitor: playerCounts[1],
-		detective: playerCounts[2]
-	};
-}
-
-export function getPlayers(text, playersMap) {
-	const players = [...text.matchAll(/J;(.*?);/g)];
-	return players.map(([, guid]) => {
-		const meta = playersMap.get(guid);
-		return {
-			guid,
-			meta
-		};
+	return result[1].split(";").map(data => {
+		const [guid, role] = data.split(",");
+		return { ...playerMap.get(guid), role };
 	});
 }
 
-export function getItems(text) {
-	const items = [...text.matchAll(/TTT_ITEM_BOUGHT;(.*?);(.*?);(.*?);(.*)/g)];
-	return items.map(item => ({
-		name: item[4],
-		role: item[3],
-		player: item[1]
-	}));
+export function getOutcome(text) {
+	const result = text.match(/\n *\d*:\d* TTT_ROUND_END;(.*?);(.*?);(.*);*/);
+	if (!result) return null;
+
+	const [, winner, reason, roundLength] = result;
+	return { winner, reason, roundLength: Number(roundLength) };
 }
 
-export function getOutcome(text) {
-	const outcome = text.match(/TTT_ROUND_END;(.*?);(.*?);(.*);*/);
-	if (!outcome) return null;
+function getDamageEvent(text, players) {
+	const result = text.match(/ *(\d*:\d*) (D|K);(.*);.*;.*;.*;(.*);.*;.*;.*;(.*);(.*);(.*);(.*)/);
+	if (!result) return null;
 
-	return {
-		winner: outcome[1],
-		reason: outcome[2],
-		roundLength: Number(outcome[3])
-	};
+	const [, timeRaw, type, victimGuid, attackerGuid, weaponRaw, damage, means, hitLoc] = result;
+
+	const time = logTimeToSeconds(timeRaw);
+	const victim = players.find(({ guid }) => guid === victimGuid);
+	const attacker = players.find(({ guid }) => guid === attackerGuid);
+	let weapon = weaponRaw;
+	if (means === "MOD_MELEE" && !["combat_knife_mp", "riotshield_mp"].includes(weapon)) {
+		weapon = "melee_mp";
+	}
+
+	const events = [{
+		type: "damage", time, victim, attacker, damage: Number(damage), weapon, means, hitLoc
+	}];
+
+	if (type === "K") {
+		events.push({
+			type: "death", time, victim, attacker, weapon, means, hitLoc
+		});
+	}
+
+	return events;
+}
+
+function getItemBuyEvent(text, players) {
+	const result = text.match(/ *(\d*:\d*) TTT_ITEM_BOUGHT;(.*);.*;.*;(.*)/);
+	if (!result) return null;
+
+	const [, timeRaw, guid, item] = result;
+	const player = players.find(player => guid === player.guid);
+	return { type: "item-buy", time: logTimeToSeconds(timeRaw), player, item };
+}
+
+export function getEvents(text, players) {
+	const result = text.match(/\n *(\d*:\d*) TTT_ROUND_START.*\n((?:.|\n)*?)\n *(\d*:\d*) TTT_ROUND_END/);
+	if (!result) return null;
+
+	const [, startTimeRaw, eventsText, endTimeRaw] = result;
+	const startTime = logTimeToSeconds(startTimeRaw);
+	const endTime = logTimeToSeconds(endTimeRaw);
+
+	const events = eventsText.split("\n").map(eventText => {
+		return getDamageEvent(eventText, players) ||
+			getItemBuyEvent(eventText, players) ||
+			null;
+	}).filter(event => event).flat(1);
+
+	return [
+		{ type: "round-start", time: startTime },
+		...events,
+		{ type: "round-end", time: endTime }
+	].map(event => ({ ...event, time: event.time - startTime }));
 }

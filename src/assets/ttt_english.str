@@ -1,0 +1,25 @@
+REFERENCE           WEAPON_NONE
+LANG_ENGLISH        "Unknown Weapon"
+
+REFERENCE           WEAPON_MELEE
+LANG_ENGLISH        "Melee Attack"
+
+REFERENCE           WEAPON_COMBAT_KNIFE
+LANG_ENGLISH        "Combat Knife"
+
+REFERENCE           WEAPON_BARREL
+LANG_ENGLISH        "Explosive Barrel"
+
+REFERENCE           WEAPON_DESTRUCTIBLE_CAR
+LANG_ENGLISH        "Destructible Car"
+
+REFERENCE           WEAPON_TURRET_MINIGUN
+LANG_ENGLISH        "Minigun Turret"
+
+REFERENCE           WEAPON_HELICOPTER
+LANG_ENGLISH        "Helicopter"
+
+REFERENCE           WEAPON_HEALTH_STATION
+LANG_ENGLISH        "Health Station"
+
+ENDMARKER

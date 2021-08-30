@@ -1,5 +1,5 @@
 <script>
-	import { fetchData } from "./js/data";
+	import { fetchData, parseData } from "./js/data";
 	import { filterRounds } from "./js/eval";
 
 	import { Router, Route, createHistory } from "svelte-navigator";
@@ -18,6 +18,7 @@
 
 	const promise = fetchData();
 	promise
+		.then(result => parseData(result))
 		.then(result => (data = result))
 		.catch(error => console.error(error));
 
@@ -25,7 +26,7 @@
 </script>
 
 {#await promise}
-	<Loading>Loading data...</Loading>
+	<Loading>Loading & parsing data...</Loading>
 {:then}
 	<Router history={hashHistory}>
 		<main>
@@ -33,11 +34,11 @@
 
 			<Filters bind:filters />
 			{#if rounds}
-				<Route path="/">
-					<Overview rounds={rounds} />
+				<Route path="/*">
+					<Overview {rounds} />
 				</Route>
-				<Route path="/players">
-					<Players />
+				<Route path="/players/*">
+					<Players {rounds} players={data.players} />
 				</Route>
 			{/if}
 		</main>
@@ -49,8 +50,9 @@
 
 <style>
 main {
-	margin: 0 1em;
+	padding: 0 1em;
 	width: 100%;
+	min-width: 640px;
 	max-width: 1440px;
 }
 
