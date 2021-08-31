@@ -20,7 +20,6 @@
 
 	$: {
 		if (chart && role) {
-			// chart.data.labels = [];
 			chart.data.datasets = items.map(({ name, count }, i) => {
 				return {
 					label: name,
@@ -29,6 +28,7 @@
 					borderColor: `rgb(${chartColors[role][i % chartColors[role].length]})`
 				};
 			});
+			chart.options.scales.x.max = items.reduce((total, { count }) => total + count, 0) || 1;
 			chart.update();
 		}
 	}
