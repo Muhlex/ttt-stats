@@ -22,11 +22,6 @@
 		chart = new Chart(canvas, {
 			type: "doughnut",
 			options: {
-				plugins: {
-					legend: {
-						display: false
-					}
-				},
 				backgroundColor: [
 					"rgba(255, 99, 132, 0.2)",
 					"rgba(255, 159, 64, 0.2)",
@@ -45,7 +40,12 @@
 					"rgb(153, 102, 255)",
 					"rgb(171, 172, 173)"
 				],
-				borderWidth: 2
+				borderWidth: 2,
+				plugins: {
+					legend: {
+						display: false
+					}
+				}
 			},
 			data: {
 				labels: [],
@@ -57,30 +57,20 @@
 	});
 </script>
 
-<div class="weapons">
-	<h2>Weapons</h2>
-	<div class="chart-weapons">
-		<div class="middle">
-			{#if weaponStats.length}
-				Favorite weapon:<br>
-				<div class="weapon">{getWeaponDisplayName(weaponStats[0].name)}</div>
-			{/if}
-		</div>
-		<canvas bind:this={canvas}></canvas>
+<div class="chart-weapons">
+	<div class="middle">
+		{#if weaponStats.length}
+			Favorite weapon:<br>
+			<div class="weapon">{getWeaponDisplayName(weaponStats[0].name)}</div>
+		{/if}
 	</div>
+	<canvas bind:this={canvas} />
 </div>
 
 <style>
-	.weapons {
-		flex-grow: 1;
-		flex-basis: 200px;
-		min-width: 320px;
-		max-width: 600px;
-		overflow: hidden; /* somehow chart.js requires this */
-	}
-
 	.chart-weapons {
 		position: relative;
+		overflow: hidden; /* somehow chart.js requires this */
 		display: flex;
 		justify-content: center;
 		align-items: center;

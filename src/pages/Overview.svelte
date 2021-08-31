@@ -2,7 +2,7 @@
 	import {
 		groupBy,
 		getRoundTotals,
-		getItemCounts
+		getRoundItemCounts
 	} from "../js/eval";
 
 	import Rounds from "../components/Rounds.svelte";
@@ -11,7 +11,7 @@
 	export let rounds;
 
 	$: roundTotals = rounds && getRoundTotals(rounds);
-	$: items = rounds && groupBy("role", getItemCounts(rounds));
+	$: items = rounds && groupBy("role", getRoundItemCounts(rounds));
 </script>
 
 <Rounds {roundTotals} />

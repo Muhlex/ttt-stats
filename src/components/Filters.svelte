@@ -90,6 +90,7 @@
 <style>
 	.filters {
 		position: sticky;
+		z-index: 100;
 
 		top: 1em;
 		box-shadow: 0 -1.5em 0 0 var(--bg);

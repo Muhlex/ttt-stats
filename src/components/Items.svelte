@@ -33,14 +33,20 @@
 		chart = new Chart(canvas, {
 			type: "bar",
 			options: {
+				aspectRatio: 3,
 				indexAxis: "y",
-				borderWidth: 1.5
+				borderWidth: 1.5,
+				plugins: {
+					legend: {
+						display: false
+					}
+				}
 			},
 			data: {
 				datasets: [
 					{
 						data: [],
-						label: "times bought",
+						label: "Times bought",
 						parsing: {
 							yAxisKey: "name",
 							xAxisKey: "count"

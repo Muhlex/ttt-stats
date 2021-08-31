@@ -58,7 +58,7 @@ export function getRoundMeans(totals) {
 	return result;
 }
 
-export function getItemCounts(rounds) {
+export function getRoundItemCounts(rounds) {
 	const events = rounds.flatMap(({ events }) => {
 		return events.filter(({ type }) => type === "item-buy");
 	});
@@ -134,4 +134,22 @@ export function getPlayerWeaponStats(kills) {
 	return [...map]
 		.map(([name, data]) => ({ name, ...data }))
 		.sort((a, b) => b.kills - a.kills);
+}
+
+export function getPlayerItemCounts(rounds, guid) {
+	const events = rounds.flatMap(({ events }) => {
+		return events.filter(({ type, player }) => type === "item-buy" && player.guid === guid);
+	});
+
+	const map = new Map();
+	for (const event of events) {
+		map.set(event.item, {
+			count: (map.get(event.item)?.count || 0) + 1,
+			role: event.player.role
+		});
+	}
+
+	return [...map]
+		.map(([name, data]) => ({ name, ...data }))
+		.sort((a, b) => b.count - a.count);
 }
