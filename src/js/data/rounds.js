@@ -15,7 +15,7 @@ export function getPlayers(text, playerMap) {
 	if (!result) return [];
 
 	return result[1].split(";").map(data => {
-		const [guid, role] = data.split(",");
+		const [, guid, role] = data.match(/(.*)<(.*)>/);
 		return { ...playerMap.get(guid), role };
 	});
 }
