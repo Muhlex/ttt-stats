@@ -1,7 +1,7 @@
 <script>
 	import { Route } from "svelte-navigator";
 	import Link from "../components/Link.svelte";
-	import Player from "../components/Player.svelte";
+	import Player from "../components/Player/index.svelte";
 
 	export let rounds, players;
 

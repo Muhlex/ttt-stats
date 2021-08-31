@@ -116,7 +116,7 @@ export function getPlayerHeadshotPercentage(kills) {
 	return headshotKills.length / (hitscanKills.length || 1);
 }
 
-export function getPlayerRoundsWon(playerRounds) {
+export function getPlayerWonRounds(playerRounds) {
 	return playerRounds.filter(({ role, outcome }) => {
 		const playerTeam = role === "traitor" ? "traitor" : "innocent";
 		return playerTeam === outcome.winner;
