@@ -21,7 +21,7 @@ jobs:
       with:
         node-version: '14.x'
     - run: npm ci
-    - run: npm run build -- --base=/ttt-stats/
+    - run: npm run build # -- --base=/ttt-stats/
 
     - name: Deploy Website to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
