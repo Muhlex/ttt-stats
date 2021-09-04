@@ -15,19 +15,25 @@
 
 	$: r = (() => {
 		const any = getPlayerRounds(rounds, player.guid);
-		return { any, innocent: [], traitor: [], detective: [], ...groupBy("role", any) };
+		return {
+			any,
+			innocent: [],
+			traitor: [],
+			detective: [],
+			...groupBy((({ player }) => player.role), any)
+		};
 	})();
 	$: kills = {
-		any: getPlayerKills(r.any, player.guid),
-		innocent: getPlayerKills(r.innocent, player.guid),
-		traitor: getPlayerKills(r.traitor, player.guid),
-		detective: getPlayerKills(r.detective, player.guid)
+		any: getPlayerKills(r.any),
+		innocent: getPlayerKills(r.innocent),
+		traitor: getPlayerKills(r.traitor),
+		detective: getPlayerKills(r.detective)
 	};
 	$: deaths = {
-		any: getPlayerDeaths(r.any, player.guid),
-		innocent: getPlayerDeaths(r.innocent, player.guid),
-		traitor: getPlayerDeaths(r.traitor, player.guid),
-		detective: getPlayerDeaths(r.detective, player.guid)
+		any: getPlayerDeaths(r.any),
+		innocent: getPlayerDeaths(r.innocent),
+		traitor: getPlayerDeaths(r.traitor),
+		detective: getPlayerDeaths(r.detective)
 	};
 	$: items = {
 		traitor: [],

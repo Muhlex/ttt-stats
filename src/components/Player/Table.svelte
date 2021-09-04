@@ -1,8 +1,10 @@
 <script>
 	import {
 		getPlayerPlaytime,
+		getPlayerWonRounds,
+		getPlayerFirstDeathRounds,
 		getPlayerHeadshotPercentage,
-		getPlayerWonRounds
+		getPlayerTeamKills
 	} from "../../js/eval";
 
 	export let rounds, kills, deaths;
@@ -24,13 +26,18 @@
 	};
 
 	$: tableData = [{
-		key: "Rounds played",
-		row: grouped.rounds.map(rounds => rounds.length)
-	}, {
 		key: "Playtime",
 		row: grouped.rounds
 			.map(rounds => getPlayerPlaytime(rounds))
 			.map(value => `${(value / 60 / 60).toFixed(1)} h`)
+	}, {
+		key: "Rounds played",
+		row: grouped.rounds.map(rounds => rounds.length)
+	}, {
+		key: "Rounds won",
+		row: grouped.rounds
+			.map(rounds => getPlayerWonRounds(rounds).length / rounds.length)
+			.map(value => `${(value * 100).toFixed()}%`)
 	}, {
 		key: "Kills",
 		row: grouped.kills.map(value => value.length)
@@ -52,10 +59,15 @@
 			.map(kills => getPlayerHeadshotPercentage(kills))
 			.map(value => `${(value * 100).toFixed()}%`)
 	}, {
-		key: "Rounds Won",
+		key: "Team Kills",
+		row: grouped.kills
+			.map(kills => getPlayerTeamKills(kills).length / (kills.length || 1))
+			.map(value => `${(value * 100).toFixed(1)}%`)
+	}, {
+		key: "First Deaths",
 		row: grouped.rounds
-			.map(rounds => getPlayerWonRounds(rounds).length / rounds.length)
-			.map(value => `${(value * 100).toFixed()}%`)
+			.map(rounds => getPlayerFirstDeathRounds(rounds).length / (rounds.length || 1))
+			.map(value => `${(value * 100).toFixed(1)}%`)
 	}];
 </script>
 

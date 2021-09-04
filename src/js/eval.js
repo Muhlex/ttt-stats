@@ -9,12 +9,16 @@ export function filterRounds(rounds, { minPlayers, maxPlayers, minDate, maxDate 
 	});
 }
 
-export function groupBy(key, array) {
-	return array.reduce((objectsByKeyValue, obj) => {
-		const value = obj[key];
-		objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
-		return objectsByKeyValue;
+export function groupBy(category, array) {
+	return array.reduce((objectsByCategory, obj) => {
+		const value = typeof category === "string" ? obj[category] : category(obj);
+		objectsByCategory[value] = (objectsByCategory[value] || []).concat(obj);
+		return objectsByCategory;
 	}, {});
+}
+
+export function getRoleTeam(role) {
+	return role === "traitor" ? "traitor" : "innocent";
 }
 
 export function getRoundTotals(rounds) {
@@ -41,23 +45,6 @@ export function getRoundTotals(rounds) {
 	};
 }
 
-// probably unnecessary
-export function getRoundMeans(totals) {
-	const each = (obj, target) => {
-		for (const key in obj) {
-			if (typeof obj[key] === "object") {
-				target[key] = {};
-				each(obj[key], target[key]);
-			} else {
-				target[key] = obj[key] / totals.rounds;
-			}
-		}
-	};
-	const result = {};
-	each(totals, result);
-	return result;
-}
-
 export function getRoundItemCounts(rounds) {
 	const events = rounds.flatMap(({ events }) => {
 		return events.filter(({ type }) => type === "item-buy");
@@ -79,15 +66,30 @@ export function getRoundItemCounts(rounds) {
 export function getPlayerRounds(rounds, guid) {
 	return rounds
 		.filter(({ players }) => players.findIndex(p => p.guid === guid) > -1)
-		.map(round => ({ ...round, role: round.players.find(p => p.guid === guid).role }));
+		.map(round => ({ ...round, player: round.players.find(p => p.guid === guid) }));
+}
+
+export function getPlayerWonRounds(playerRounds) {
+	return playerRounds.filter(({ player, outcome }) => {
+		return getRoleTeam(player.role) === outcome.winner;
+	});
+}
+
+export function getPlayerFirstDeathRounds(playerRounds) {
+	return playerRounds.filter(({ events, player }) => {
+		const deaths = events.filter(({ type }) => type === "death");
+		return deaths.findIndex(({ victim }) => victim.guid === player.guid) === 0;
+	});
 }
 
 export function getPlayerPlaytime(playerRounds) {
 	return playerRounds.reduce((total, { outcome: { roundLength } }) => total + roundLength, 0);
 }
 
-export function getPlayerKills(rounds, guid) {
-	const events = rounds.flatMap(({ events }) => {
+export function getPlayerKills(playerRounds) {
+	const guid = playerRounds[0]?.player.guid;
+
+	const events = playerRounds.flatMap(({ events }) => {
 		return events.filter(({ type }) => type === "death");
 	});
 
@@ -96,8 +98,10 @@ export function getPlayerKills(rounds, guid) {
 	});
 }
 
-export function getPlayerDeaths(rounds, guid) {
-	const events = rounds.flatMap(({ events }) => {
+export function getPlayerDeaths(playerRounds) {
+	const guid = playerRounds[0]?.player.guid;
+
+	const events = playerRounds.flatMap(({ events }) => {
 		return events.filter(({ type }) => type === "death");
 	});
 
@@ -116,10 +120,9 @@ export function getPlayerHeadshotPercentage(kills) {
 	return headshotKills.length / (hitscanKills.length || 1);
 }
 
-export function getPlayerWonRounds(playerRounds) {
-	return playerRounds.filter(({ role, outcome }) => {
-		const playerTeam = role === "traitor" ? "traitor" : "innocent";
-		return playerTeam === outcome.winner;
+export function getPlayerTeamKills(kills) {
+	return kills.filter(({ victim, attacker }) => {
+		return victim && getRoleTeam(victim.role) === getRoleTeam(attacker.role);
 	});
 }
 
