@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from "svelte";
 	import Chart from "chart.js/auto";
+	import ChartDataLabels from "chartjs-plugin-datalabels";
 
 	import { getPlayerWeaponStats } from "../../js/eval";
 	import { getWeaponDisplayName } from "../../js/data/weapons";
@@ -21,6 +22,7 @@
 	onMount(() => {
 		chart = new Chart(canvas, {
 			type: "doughnut",
+			plugins: [ChartDataLabels],
 			options: {
 				backgroundColor: [
 					"rgba(255, 99, 132, 0.2)",
@@ -44,6 +46,14 @@
 				plugins: {
 					legend: {
 						display: false
+					},
+					datalabels: {
+						formatter(value, context) {
+							if (value < kills.any.length * 0.025) return "";
+							const index = context.dataIndex;
+							const label = context.chart.data.labels[index];
+							return label;
+						}
 					}
 				}
 			},

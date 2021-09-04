@@ -7,7 +7,7 @@
 
 	$: playerList = [...players.values()]
 		.filter(({ isBot }) => !isBot)
-		.sort((a, b) => a.name > b.name);
+		.sort((a, b) => a.name < b.name ? -1 : 1);
 </script>
 
 <h2>Players</h2>

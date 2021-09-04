@@ -3,6 +3,7 @@
 
 	import { toMMSS } from "../js/util";
 	import Chart from "chart.js/auto";
+	import ChartDataLabels from "chartjs-plugin-datalabels";
 
 	export let roundTotals;
 
@@ -43,6 +44,7 @@
 	onMount(() => {
 		chart = new Chart(canvas, {
 			type: "pie",
+			plugins: [ChartDataLabels],
 			options: {
 				backgroundColor: [
 					"rgba(75, 192, 120, 0.2)",
@@ -54,7 +56,14 @@
 					"rgb(213, 194, 43)",
 					"rgb(255, 99, 132)"
 				],
-				borderWidth: 2
+				borderWidth: 2,
+				plugins: {
+					datalabels: {
+						formatter(value) {
+							return (value / roundTotals.rounds * 100).toFixed() + "%";
+						}
+					}
+				}
 			},
 			data: {
 				labels: ["Innocent (death)", "Innocent (timelimit)", "Traitors (death)"],

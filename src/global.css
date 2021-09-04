@@ -1,4 +1,6 @@
 :root {
+	--font: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui,
+		helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
 	--text: #222;
 	--bg: #fff;
 	--bg1: #efeff7;
@@ -28,8 +30,7 @@ html {
 }
 
 html {
-	font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui,
-		helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
+	font-family: var(--font);
 	color: var(--text);
 	background-color: var(--bg);
 }

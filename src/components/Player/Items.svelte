@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from "svelte";
 	import Chart from "chart.js/auto";
+	import ChartDataLabels from "chartjs-plugin-datalabels";
 
 	export let items, role;
 
@@ -36,6 +37,7 @@
 	onMount(() => {
 		chart = new Chart(canvas, {
 			type: "bar",
+			plugins: [ChartDataLabels],
 			options: {
 				maintainAspectRatio: false,
 				indexAxis: "y",
@@ -51,6 +53,19 @@
 				plugins: {
 					legend: {
 						display: false
+					},
+					datalabels: {
+						textAlign: "center",
+						font(context) {
+							const index = context.dataIndex;
+							const pct = context.dataset.data[index] / context.chart.options.scales.x.max;
+							const size = Math.min(Math.max(pct * 64, 8), 12);
+							return { size };
+						},
+						formatter(value, context) {
+							if (value < context.chart.options.scales.x.max * 0.06) return "";
+							return context.dataset.label.replace(" ", "\n");
+						}
 					}
 				}
 			},
