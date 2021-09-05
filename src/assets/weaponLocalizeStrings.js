@@ -196,6 +196,7 @@ export default {
 	"beretta393_silencer_mp": "WEAPON_BERETTA393_SILENCER",
 	"beretta393_silencer_xmags_mp": "WEAPON_BERETTA393_BLING",
 	"beretta393_xmags_mp": "WEAPON_BERETTA393_XMAGS",
+	"briefcase_bomb_mp": "WEAPON_BOMB",
 	"c4_mp": "WEAPON_C4",
 	"cheytac_acog_fmj_mp": "WEAPON_CHEYTAC_BLING",
 	"cheytac_acog_heartbeat_mp": "WEAPON_CHEYTAC_BLING",

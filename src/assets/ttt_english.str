@@ -14,7 +14,10 @@ REFERENCE           WEAPON_DESTRUCTIBLE_CAR
 LANG_ENGLISH        "Destructible Car"
 
 REFERENCE           WEAPON_TURRET_MINIGUN
-LANG_ENGLISH        "Minigun Turret"
+LANG_ENGLISH        "Mounted Minigun"
+
+REFERENCE           WEAPON_BOMB
+LANG_ENGLISH        "Bomb"
 
 REFERENCE           WEAPON_HELICOPTER
 LANG_ENGLISH        "Helicopter"
