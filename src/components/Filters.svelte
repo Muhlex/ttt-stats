@@ -1,16 +1,23 @@
 <script>
-	const today = new Date();
-	const startDay = new Date();
-	startDay.setMonth(startDay.getMonth() - 3);
+	function dateToString(d) {
+		return [
+			String(d.getFullYear()),
+			String(d.getMonth() + 1).padStart(2, "0"),
+			String(d.getDate()).padStart(2, "0")
+		].join("-");
+	}
 
-	const defaultMinDateString = startDay.toISOString().split("T")[0];
-	const defaultMaxDateString = today.toISOString().split("T")[0];
+	const maxDate = new Date();
+	const minDate = new Date();
+	minDate.setMonth(maxDate.getMonth() - 3);
+
+	const todayYYYYMMDD = dateToString(maxDate);
 
 	export let filters = {
 		minPlayers: 6,
 		maxPlayers: 18,
-		minDate: new Date(defaultMinDateString).setUTCHours(0, 0, 0, 0),
-		maxDate: new Date(defaultMaxDateString).setUTCHours(23, 59, 59, 999)
+		minDate: new Date(dateToString(minDate)).setUTCHours(0, 0, 0, 0),
+		maxDate: new Date(todayYYYYMMDD).setUTCHours(23, 59, 59, 999)
 	};
 
 	$: minDateString = filters.minDate && new Date(filters.minDate).toISOString().split("T")[0];
@@ -21,7 +28,7 @@
 	<h2>Filters</h2>
 	<div class="filter-groups">
 		<div class="filter">
-			<h3>Playercount</h3>
+			<h3>👥 Playercount</h3>
 			<label for="filter-min-players">min</label>
 			<input
 				id="filter-min-players"
@@ -50,16 +57,17 @@
 			>
 		</div>
 		<div class="filter">
-			<h3>Date</h3>
+			<h3>📅 Date</h3>
 			<label for="filter-min-players">between</label>
 			<input
 				id="filter-min-date"
 				type="date"
-				max={defaultMaxDateString}
+				required
+				max={todayYYYYMMDD}
 				value={minDateString}
 				on:input={({ target: { value } }) => {
 					filters.minDate = new Date(value).setUTCHours(0, 0, 0, 0);
-					if (value) {
+					if (value && filters.maxDate !== null) {
 						filters.maxDate = Math.max(
 							new Date(value).setUTCHours(23, 59, 59, 999),
 							filters.maxDate
@@ -67,22 +75,30 @@
 					}
 				}}
 			>
+			<button aria-label="Remove minimum date" on:click={() => (filters.minDate = null)}>
+				❌
+			</button>
+
 			<label for="filter-max-players">and</label>
 			<input
-				id="filter-max-date"
-				type="date"
-				max={defaultMaxDateString}
-				value={maxDateString}
-				on:input={({ target: { value } }) => {
-					filters.maxDate = new Date(value).setUTCHours(23, 59, 59, 999);
-					if (value) {
-						filters.minDate = Math.min(
-							new Date(value).setUTCHours(0, 0, 0, 0),
-							filters.minDate
+			id="filter-max-date"
+			type="date"
+			required
+			max={todayYYYYMMDD}
+			value={maxDateString}
+			on:input={({ target: { value } }) => {
+				filters.maxDate = new Date(value).setUTCHours(23, 59, 59, 999);
+				if (value && filters.minDate !== null) {
+					filters.minDate = Math.min(
+						new Date(value).setUTCHours(0, 0, 0, 0),
+						filters.minDate
 						);
 					}
 				}}
 			>
+			<button aria-label="Remove maximum date" on:click={() => (filters.maxDate = maxDate)}>
+				❌
+			</button>
 		</div>
 	</div>
 </div>

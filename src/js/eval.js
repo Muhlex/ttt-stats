@@ -3,8 +3,8 @@ export function filterRounds(rounds, { minPlayers, maxPlayers, minDate, maxDate 
 		return (
 			(typeof minPlayers !== "number" || players.length >= minPlayers) &&
 			(typeof maxPlayers !== "number" || players.length <= maxPlayers) &&
-			(isNaN(minDate) || date >= minDate) &&
-			(isNaN(maxDate) || date <= maxDate)
+			(minDate === null || isNaN(minDate) || date >= minDate) &&
+			(maxDate === null || isNaN(maxDate) || date <= maxDate)
 		);
 	});
 }
