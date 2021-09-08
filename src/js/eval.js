@@ -63,6 +63,10 @@ export function getRoundItemCounts(rounds) {
 		.sort((a, b) => b.count - a.count);
 }
 
+export function isPlayerInRounds(rounds, guid) {
+	return rounds.findIndex(({ players }) => players.findIndex(p => p.guid === guid) > -1) > -1;
+}
+
 export function getPlayerRounds(rounds, guid) {
 	return rounds
 		.filter(({ players }) => players.findIndex(p => p.guid === guid) > -1)

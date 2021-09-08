@@ -3,6 +3,8 @@
 	import Link from "../components/Link.svelte";
 	import Player from "../components/Player/index.svelte";
 
+	import { isPlayerInRounds } from "../js/eval";
+
 	export let rounds, players;
 
 	$: playerList = [...players.values()]
@@ -13,7 +15,7 @@
 <h2>Players</h2>
 <div class="player-list">
 	{#each playerList as player}
-		<Link to={player.guid}>
+		<Link to={player.guid} class={!isPlayerInRounds(rounds, player.guid) && "no-data"}>
 			{player.name}
 		</Link>
 	{/each}
@@ -54,6 +56,9 @@
 	.player-list :global(a.active) {
 		background-color: var(--active);
 		color: var(--bg);
+	}
+	.player-list :global(a.no-data) {
+		opacity: 0.5;
 	}
 	.player-list::after {
 		content: '';
