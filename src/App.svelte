@@ -51,6 +51,7 @@
 <style>
 main {
 	padding: 0 1em;
+	margin: 0 auto;
 	width: 100%;
 	min-width: 640px;
 	max-width: 1440px;
