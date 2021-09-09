@@ -10,12 +10,15 @@
 	$: playerList = [...players.values()]
 		.filter(({ isBot }) => !isBot)
 		.sort((a, b) => a.name < b.name ? -1 : 1);
+	$: playerListExtended = playerList.map(player => {
+		return { ...player, inRounds: isPlayerInRounds(rounds, player.guid) };
+	});
 </script>
 
 <h2>Players</h2>
 <div class="player-list">
-	{#each playerList as player}
-		<Link to={player.guid} class={!isPlayerInRounds(rounds, player.guid) && "no-data"}>
+	{#each playerListExtended as player}
+		<Link to={player.guid} class={!player.inRounds && "no-data"}>
 			{player.name}
 		</Link>
 	{/each}
