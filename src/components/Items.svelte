@@ -6,7 +6,8 @@
 
 	let canvas;
 	let chart;
-	let role;
+	const roles = ["traitor", "detective"];
+	let role = roles[0];
 
 	const chartColors = {
 		traitor: [
@@ -59,11 +60,20 @@
 </script>
 
 <h2>Items</h2>
-<label for="item-role">Select role</label>
-<select id="item-select-role" bind:value={role}>
-	<option value="traitor">Traitor</option>
-	<option value="detective">Detective</option>
-</select>
+<div class="item-select-role" aria-label="Select role">
+	{#each roles as r}
+		<button
+			on:click={() => (role = r)}
+			style={
+				`--btn-bg: rgb(${chartColors[r][0]});` +
+				`--btn-bg-hover: rgb(${chartColors[r][1]});`
+			}
+			class:active={role === r}
+		>
+			{r.charAt(0).toUpperCase() + r.slice(1)}
+		</button>
+	{/each}
+</div>
 
 <div class="chart">
 	<canvas bind:this={canvas}></canvas>
@@ -72,5 +82,37 @@
 <style>
 	.chart {
 		margin-bottom: 1em;
+	}
+	.item-select-role {
+		display: flex;
+		justify-content: flex-end;
+	}
+	.item-select-role button {
+		flex-basis: 10%;
+
+		border: none;
+		border-radius: 0;
+		margin: 0;
+		font-size: inherit;
+		text-decoration: none;
+		appearance: none;
+
+		padding: 1em 1.5em;
+		font-weight: 600;
+
+		color: var(--bg);
+		background-color: var(--accent);
+
+		transition: 300ms ease;
+		transition-property: background-color;
+	}
+	.item-select-role button:hover {
+		background-color: var(--btn-bg-hover);
+	}
+	.item-select-role button.active {
+		background-color: var(--btn-bg);
+	}
+	.item-select-role button:disabled {
+		opacity: 0.5;
 	}
 </style>
