@@ -49,12 +49,12 @@
 		key: "Rounds survived",
 		row: grouped.rounds
 			.map(rounds => getPlayerRoundsSurvived(rounds).length / (rounds.length || 1))
-			.map(value => `${(value * 100).toFixed(1)}%`)
+			.map(value => `${(value * 100).toFixed()}%`)
 	}, {
 		key: "Rounds died first",
 		row: grouped.rounds
 			.map(rounds => getPlayerRoundsDiedFirst(rounds).length / (rounds.length || 1))
-			.map(value => `${(value * 100).toFixed(1)}%`)
+			.map(value => `${(value * 100).toFixed()}%`)
 	}, {
 		key: "Kills",
 		row: grouped.kills.map(value => value.length)
