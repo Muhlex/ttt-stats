@@ -16,11 +16,11 @@
 
 		display: flex;
 		justify-content: center;
-		background-color: var(--bg1);
+		background-color: rgb(var(--col-bg1));
 	}
 	nav :global(a) {
 		padding: 1em 2em;
-		color: var(--text);
+		color: rgb(var(--col-text));
 		text-decoration: none;
 		font-weight: 600;
 		font-size: 1.2em;
@@ -30,10 +30,10 @@
 	}
 	nav :global(a):hover,
 	nav :global(a):focus {
-		color: var(--hover);
+		color: rgb(var(--col-hover));
 	}
 	nav :global(a.active) {
-		color: var(--active);
-		box-shadow: inset 0 -0.5em 0 0 var(--active);
+		color: rgb(var(--col-active));
+		box-shadow: inset 0 -0.5em 0 0 rgb(var(--col-active));
 	}
 </style>

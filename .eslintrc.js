@@ -95,7 +95,7 @@ module.exports = {
 		"no-label-var": "error",
 		"no-undef-init": "warn",
 		// "no-undefined": "warn",
-		"no-use-before-define": "error",
+		// "no-use-before-define": "error",
 
 		// STYLISTIC ISSUES
 		"array-bracket-newline": ["error", "consistent"],

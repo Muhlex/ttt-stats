@@ -109,10 +109,10 @@
 		z-index: 100;
 
 		top: 1em;
-		box-shadow: 0 -1.5em 0 0 var(--bg);
+		box-shadow: 0 -1.5em 0 0 rgb(var(--col-bg));
 		padding: 1em;
-		background-color: var(--bg1);
-		border: 2px solid var(--accent);
+		background-color: rgb(var(--col-bg1));
+		border: 2px solid rgb(var(--col-accent));
 	}
 
 	.filter-groups {

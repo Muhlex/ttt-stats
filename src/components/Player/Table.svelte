@@ -2,10 +2,14 @@
 	import {
 		getPlayerPlaytime,
 		getPlayerWonRounds,
-		getPlayerFirstDeathRounds,
+		getPlayerKDR,
+		getPlayerAdjustedKDR,
 		getPlayerHeadshotPercentage,
-		getPlayerTeamKills
+		getPlayerTeamKills,
+		getPlayerFirstDeathRounds
 	} from "../../js/eval";
+
+	import Tooltip from "../../components/Tooltip.svelte";
 
 	export let rounds, kills, deaths;
 
@@ -24,6 +28,8 @@
 		kills: groupForTableColumns(kills),
 		deaths: groupForTableColumns(deaths)
 	};
+
+	$: groupCount = grouped.rounds.length;
 
 	$: tableData = [{
 		key: "Playtime",
@@ -48,11 +54,21 @@
 		key: "K/D Ratio",
 		row: (() => {
 			const result = [];
-			for (let i = 0; i < grouped.kills.length; i++) {
-				result.push((grouped.kills[i].length / (grouped.deaths[i].length || 1)).toFixed(2));
+			for (let i = 0; i < groupCount; i++) {
+				result.push(getPlayerKDR(grouped.kills[i], grouped.deaths[i]).toFixed(2));
 			}
 			return result;
 		})()
+	}, {
+		key: "Adjusted KDR",
+		row: (() => {
+			const result = [];
+			for (let i = 0; i < groupCount; i++) {
+				result.push(getPlayerAdjustedKDR(grouped.kills[i], grouped.deaths[i]).toFixed(2));
+			}
+			return result;
+		})(),
+		tooltip: "Friendly-fire kills instead count as deaths"
 	}, {
 		key: "Headshot Kills",
 		row: grouped.kills
@@ -83,9 +99,15 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each tableData as { key, row }}
+		{#each tableData as { key, row, tooltip }}
 			<tr>
-				<th scope="row">{key}</th>
+				<th scope="row">
+					{#if tooltip}
+						<Tooltip text={tooltip}>{key}</Tooltip>
+					{:else}
+						{key}
+					{/if}
+				</th>
 				{#each row as value}
 					<td>{value}</td>
 				{/each}
@@ -108,7 +130,7 @@
 	}
 	table td:nth-child(even),
 	table th:nth-child(even) {
-		background-color: var(--bg1);
+		background-color: rgb(var(--col-bg1));
 	}
 	table td {
 		text-align: center;
@@ -137,10 +159,10 @@
 
 		font-size: 0.625em;
 	}
-	.i { background-color: var(--i) }
+	.i { background-color: rgb(var(--col-i)) }
 	.i::before { content: 'I'; }
-	.t { background-color: var(--t) }
+	.t { background-color: rgb(var(--col-t)) }
 	.t::before { content: 'T'; }
-	.d { background-color: var(--d) }
+	.d { background-color: rgb(var(--col-d)) }
 	.d::before { content: 'D'; }
 </style>

@@ -1,24 +1,24 @@
 :root {
 	--font: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui,
 		helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
-	--text: #222;
-	--bg: #fff;
-	--bg1: #efeff7;
-	--accent: #5e5e85;
-	--hover: #8282f7;
-	--active: #4242a3;
-	--i: #4bc078;
-	--t: #ff6384;
-	--d: #36a2eb;
+	--col-text: 34, 34, 34;
+	--col-bg: 255, 255, 255;
+	--col-bg1: 239, 239, 247;
+	--col-accent: 94, 94, 133;
+	--col-hover: 130, 130, 247;
+	--col-active: 66, 66, 163;
+	--col-i: 75, 192, 120;
+	--col-t: 255, 99, 132;
+	--col-d: 54, 162, 235;
 }
 @media (prefers-color-scheme: dark) {
 	:root {
-		--text: #fff;
-		--bg: #202030;
-		--bg1: #303040;
-		--accent: #5b5b8b;
-		--hover: #7474c2;
-		--active: #9494ff;
+		--col-text: 255, 255, 255;
+		--col-bg: 32, 32, 48;
+		--col-bg1: 48, 48, 64;
+		--col-accent: 91, 91, 139;
+		--col-hover: 116, 116, 194;
+		--col-active: 148, 148, 255;
 	}
 }
 
@@ -31,8 +31,8 @@ html {
 
 html {
 	font-family: var(--font);
-	color: var(--text);
-	background-color: var(--bg);
+	color: rgb(var(--col-text));
+	background-color: rgb(var(--col-bg));
 }
 
 body {

@@ -65,8 +65,8 @@
 		<button
 			on:click={() => (role = r)}
 			style={
-				`--btn-bg: rgb(${chartColors[r][0]});` +
-				`--btn-bg-hover: rgb(${chartColors[r][1]});`
+				`--col-btn-bg: ${chartColors[r][0]};` +
+				`--col-btn-bg-hover: ${chartColors[r][1]};`
 			}
 			class:active={role === r}
 		>
@@ -100,17 +100,17 @@
 		padding: 1em 1.5em;
 		font-weight: 600;
 
-		color: var(--bg);
-		background-color: var(--accent);
+		color: rgb(var(--col-bg));
+		background-color: rgb(var(--col-accent));
 
 		transition: 300ms ease;
 		transition-property: background-color;
 	}
 	.item-select-role button:hover {
-		background-color: var(--btn-bg-hover);
+		background-color: rgb(var(--col-btn-bg-hover));
 	}
 	.item-select-role button.active {
-		background-color: var(--btn-bg);
+		background-color: rgb(var(--col-btn-bg));
 	}
 	.item-select-role button:disabled {
 		opacity: 0.5;

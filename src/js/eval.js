@@ -114,6 +114,19 @@ export function getPlayerDeaths(playerRounds) {
 	});
 }
 
+export function getPlayerKDR(kills, deaths) {
+	return kills.length / (deaths.length || 1);
+}
+
+export function getPlayerAdjustedKDR(kills, deaths) {
+	// friendly-fire kills count as deaths instead of kills
+	const tk = getPlayerTeamKills(kills).length;
+	const k = kills.length - tk;
+	const d = deaths.length + tk;
+
+	return k / (d || 1);
+}
+
 export function getPlayerHeadshotPercentage(kills) {
 	const hitscanKills = kills.filter(({ means }) => {
 		return ["MOD_PISTOL_BULLET", "MOD_RIFLE_BULLET", "MOD_HEAD_SHOT"].includes(means);

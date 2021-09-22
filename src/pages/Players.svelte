@@ -47,18 +47,18 @@
 
 		margin: 0.5em;
 		padding: 1em 1.5em;
-		background-color: var(--bg1);
+		background-color: rgb(var(--col-bg1));
 		font-weight: 600;
 
 		transition: 300ms ease;
 		transition-property: color, background-color;
 	}
 	.player-list :global(a):hover {
-		background-color: var(--hover);
+		background-color: rgb(var(--col-hover));
 	}
 	.player-list :global(a.active) {
-		background-color: var(--active);
-		color: var(--bg);
+		background-color: rgb(var(--col-active));
+		color: rgb(var(--col-bg));
 	}
 	.player-list :global(a.no-data) {
 		opacity: 0.5;
