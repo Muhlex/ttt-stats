@@ -1,12 +1,13 @@
 <script>
 	import {
 		getPlayerPlaytime,
-		getPlayerWonRounds,
+		getPlayerRoundsWon,
 		getPlayerKDR,
 		getPlayerAdjustedKDR,
 		getPlayerHeadshotPercentage,
 		getPlayerTeamKills,
-		getPlayerFirstDeathRounds
+		getPlayerRoundsSurvived,
+		getPlayerRoundsDiedFirst
 	} from "../../js/eval";
 
 	import Tooltip from "../../components/Tooltip.svelte";
@@ -42,8 +43,18 @@
 	}, {
 		key: "Rounds won",
 		row: grouped.rounds
-			.map(rounds => getPlayerWonRounds(rounds).length / rounds.length)
+			.map(rounds => getPlayerRoundsWon(rounds).length / rounds.length)
 			.map(value => `${(value * 100).toFixed()}%`)
+	}, {
+		key: "Rounds survived",
+		row: grouped.rounds
+			.map(rounds => getPlayerRoundsSurvived(rounds).length / (rounds.length || 1))
+			.map(value => `${(value * 100).toFixed(1)}%`)
+	}, {
+		key: "Rounds died first",
+		row: grouped.rounds
+			.map(rounds => getPlayerRoundsDiedFirst(rounds).length / (rounds.length || 1))
+			.map(value => `${(value * 100).toFixed(1)}%`)
 	}, {
 		key: "Kills",
 		row: grouped.kills.map(value => value.length)
@@ -78,11 +89,6 @@
 		key: "Team Kills",
 		row: grouped.kills
 			.map(kills => getPlayerTeamKills(kills).length / (kills.length || 1))
-			.map(value => `${(value * 100).toFixed(1)}%`)
-	}, {
-		key: "First Deaths",
-		row: grouped.rounds
-			.map(rounds => getPlayerFirstDeathRounds(rounds).length / (rounds.length || 1))
 			.map(value => `${(value * 100).toFixed(1)}%`)
 	}];
 </script>

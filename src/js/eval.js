@@ -73,13 +73,20 @@ export function getPlayerRounds(rounds, guid) {
 		.map(round => ({ ...round, player: round.players.find(p => p.guid === guid) }));
 }
 
-export function getPlayerWonRounds(playerRounds) {
+export function getPlayerRoundsWon(playerRounds) {
 	return playerRounds.filter(({ player, outcome }) => {
 		return getRoleTeam(player.role) === outcome.winner;
 	});
 }
 
-export function getPlayerFirstDeathRounds(playerRounds) {
+export function getPlayerRoundsSurvived(playerRounds) {
+	return playerRounds.filter(({ events, player }) => {
+		const deaths = events.filter(({ type }) => type === "death");
+		return deaths.findIndex(({ victim }) => victim.guid === player.guid) === -1;
+	});
+}
+
+export function getPlayerRoundsDiedFirst(playerRounds) {
 	return playerRounds.filter(({ events, player }) => {
 		const deaths = events.filter(({ type }) => type === "death");
 		return deaths.findIndex(({ victim }) => victim.guid === player.guid) === 0;
