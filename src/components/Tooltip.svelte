@@ -1,28 +1,19 @@
 <script>
-	import { fly } from "svelte/transition";
-
 	export let text;
-
-	let show = false;
 </script>
 
 <div
-	class="tooltip-container"
-	on:mouseover={() => (show = true)}
-	on:focus={() => (show = true)}
-	on:mouseout={() => (show = false)}
-	on:blur={() => (show = false)}
+	class="tooltip-parent"
+	tabindex="0"
 >
 	<slot />
-	{#if show}
-		<span class="tooltip" transition:fly={{ x: -16, duration: 300 }}>
-			{text}
-		</span>
-	{/if}
+	<span class="tooltip">
+		{text}
+	</span>
 </div>
 
 <style>
-	.tooltip-container {
+	.tooltip-parent {
 		position: relative;
 		text-decoration: underline dotted;
 	}
@@ -30,9 +21,9 @@
 		position: absolute;
 		top: 50%;
 		left: calc(100% + 1rem);
-		transform: translateY(-50%);
+		--base-transform: translateY(-50%);
 
-		font-size: 0.875em;
+		font-size: 0.875rem;
 		padding: 1em;
 		backdrop-filter: blur(2px);
 		background-color: rgba(var(--col-text), 0.85);
@@ -40,6 +31,18 @@
 		color: rgb(var(--col-bg));
 		min-width: max-content;
 		z-index: 1;
+
+		pointer-events: none;
+		opacity: 0;
+		transform: var(--base-transform) translateX(-16px);
+		transition: 300ms ease;
+		transition-property: opacity, transform;
+	}
+	.tooltip-parent:hover .tooltip,
+	.tooltip-parent:focus .tooltip {
+		pointer-events: all;
+		opacity: 1;
+		transform: var(--base-transform);
 	}
 	.tooltip::before {
 		content: '';

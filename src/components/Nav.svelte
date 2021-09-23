@@ -5,6 +5,7 @@
 <nav>
 	<Link to="/">Overview</Link>
 	<Link to="/players">Player Stats</Link>
+	<Link to="/leaderboards">Leaderboards</Link>
 </nav>
 
 <style>

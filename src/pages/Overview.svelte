@@ -5,8 +5,8 @@
 		getRoundItemCounts
 	} from "../js/eval";
 
-	import Rounds from "../components/Rounds.svelte";
-	import Items from "../components/Items.svelte";
+	import Rounds from "../components/Overview/Rounds.svelte";
+	import Items from "../components/Overview/Items.svelte";
 
 	export let rounds;
 

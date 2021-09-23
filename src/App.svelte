@@ -10,6 +10,7 @@
 	import Filters from "./components/Filters.svelte";
 	import Overview from "./pages/Overview.svelte";
 	import Players from "./pages/Players.svelte";
+	import Leaderboards from "./pages/Leaderboards.svelte";
 
 	const hashHistory = createHistory(createHashSource());
 
@@ -40,6 +41,9 @@
 				<Route path="/players/*">
 					<Players {rounds} players={data.players} />
 				</Route>
+				<Route path="/leaderboards/*">
+					<Leaderboards />
+				</Route>
 			{/if}
 		</main>
 		<Nav />
@@ -60,5 +64,6 @@ main {
 h1 {
 	font-weight: 600;
 	text-align: center;
+	margin-top: 0.5em;
 }
 </style>

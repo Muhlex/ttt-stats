@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from "svelte";
 
-	import { toMMSS } from "../js/util";
+	import { toMMSS } from "../../js/util";
 	import Chart from "chart.js/auto";
 	import ChartDataLabels from "chartjs-plugin-datalabels";
 
