@@ -34,7 +34,9 @@
 
 		font-size: 0.875em;
 		padding: 1em;
-		background-color: rgba(var(--col-text), 0.75);
+		backdrop-filter: blur(2px);
+		background-color: rgba(var(--col-text), 0.85);
+		border: 2px solid rgb(var(--col-text));
 		color: rgb(var(--col-bg));
 		min-width: max-content;
 		z-index: 1;
@@ -48,6 +50,6 @@
 		width: 0;
 		height: 0;
 		border: 0.5rem solid transparent;
-		border-right-color: rgba(var(--col-text), 0.75);
+		border-right-color: rgba(var(--col-text), 1);
 	}
 </style>

@@ -100,7 +100,7 @@
 		padding: 1em 1.5em;
 		font-weight: 600;
 
-		color: rgb(var(--col-bg));
+		color: rgb(var(--col-bright));
 		background-color: rgb(var(--col-accent));
 
 		transition: 300ms ease;

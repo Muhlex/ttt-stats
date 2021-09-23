@@ -1,8 +1,12 @@
 :root {
 	--font: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui,
 		helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
-	--col-text: 34, 34, 34;
-	--col-bg: 255, 255, 255;
+
+	--col-bright: 255, 255, 255;
+	--col-dark: 34, 34, 34;
+
+	--col-text: var(--col-dark);
+	--col-bg: var(--col-bright);
 	--col-bg1: 239, 239, 247;
 	--col-accent: 94, 94, 133;
 	--col-hover: 130, 130, 247;
@@ -13,7 +17,7 @@
 }
 @media (prefers-color-scheme: dark) {
 	:root {
-		--col-text: 255, 255, 255;
+		--col-text: var(--col-bright);
 		--col-bg: 32, 32, 48;
 		--col-bg1: 48, 48, 64;
 		--col-accent: 91, 91, 139;

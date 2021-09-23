@@ -9,7 +9,7 @@ Chart.defaults.font.family = getComputedStyle(document.documentElement).getPrope
 
 function updateChartTheme() {
 	const documentStyle = getComputedStyle(document.documentElement);
-	Chart.defaults.color = documentStyle.getPropertyValue("--col-text");
+	Chart.defaults.color = `rgb(${documentStyle.getPropertyValue("--col-text")}`;
 	Chart.defaults.borderColor = `rgb(${documentStyle.getPropertyValue("--col-bg1")})`;
 	Object.values(Chart.instances).forEach(chart => chart.update());
 }
