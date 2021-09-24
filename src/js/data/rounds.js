@@ -48,7 +48,7 @@ function getDamageEvent(text, players) {
 
 	if (type === "K") {
 		events.push({
-			type: "death", time, victim, attacker, weapon, means, hitLoc
+			type: "death", time, victim, attacker, damage: Number(damage), weapon, means, hitLoc
 		});
 	}
 

@@ -3,18 +3,17 @@
 	import Chart from "chart.js/auto";
 	import ChartDataLabels from "chartjs-plugin-datalabels";
 
-	import { getPlayerWeaponStats } from "../../js/eval";
 	import { getWeaponDisplayName } from "../../js/data/weapons";
 
-	export let kills;
+	export let weapons, kills;
 
 	let canvas, chart;
 
-	$: weaponStats = getPlayerWeaponStats(kills.any);
 	$: {
 		if (chart) {
-			chart.data.labels = weaponStats.map(({ name }) => getWeaponDisplayName(name));
-			chart.data.datasets[0].data = weaponStats.map(({ kills }) => kills);
+			// TODO: Make getWeaponDisplayName more performant.
+			chart.data.labels = weapons.map(({ name }) => getWeaponDisplayName(name));
+			chart.data.datasets[0].data = weapons.map(({ kills }) => kills);
 			chart.update();
 		}
 	}
@@ -69,9 +68,9 @@
 
 <div class="chart-weapons">
 	<div class="middle">
-		{#if weaponStats.length}
+		{#if weapons.length}
 			Favorite weapon:<br>
-			<div class="weapon">{getWeaponDisplayName(weaponStats[0].name)}</div>
+			<div class="weapon">{getWeaponDisplayName(weapons[0].name)}</div>
 		{/if}
 	</div>
 	<canvas bind:this={canvas} />

@@ -1,95 +1,77 @@
 <script>
-	import {
-		getPlayerPlaytime,
-		getPlayerRoundsWon,
-		getPlayerKDR,
-		getPlayerAdjustedKDR,
-		getPlayerHeadshotPercentage,
-		getPlayerTeamKills,
-		getPlayerRoundsSurvived,
-		getPlayerRoundsDiedFirst
-	} from "../../js/eval";
-
 	import Tooltip from "../../components/Tooltip.svelte";
 
-	export let rounds, kills, deaths;
+	export let player;
 
-	function groupForTableColumns(stat) {
+	function toTableArray(groups) {
 		return [
-			stat.innocent,
-			stat.traitor,
-			stat.detective,
-			[...stat.innocent, ...stat.detective],
-			stat.any
+			groups.innocent,
+			groups.traitor,
+			groups.detective,
+			groups.innocentTeam,
+			groups.any
 		];
 	}
 
-	$: grouped = {
-		rounds: groupForTableColumns(rounds),
-		kills: groupForTableColumns(kills),
-		deaths: groupForTableColumns(deaths)
-	};
-
-	$: groupCount = grouped.rounds.length;
-
 	$: tableData = [{
 		key: "Playtime",
-		row: grouped.rounds
-			.map(rounds => getPlayerPlaytime(rounds))
+		row: toTableArray(player.stats.playtime)
 			.map(value => `${(value / 60 / 60).toFixed(1)} h`)
 	}, {
 		key: "Rounds played",
-		row: grouped.rounds.map(rounds => rounds.length)
+		row: toTableArray(player.rounds)
+			.map(rounds => rounds.length)
 	}, {
 		key: "Rounds won",
-		row: grouped.rounds
-			.map(rounds => getPlayerRoundsWon(rounds).length / rounds.length)
-			.map(value => `${(value * 100).toFixed()}%`)
+		row: toTableArray(
+			Object.fromEntries(
+				Object.keys(player.rounds)
+					.map(k => [k, player.stats.roundsWon[k].length / (player.rounds[k].length || 1)])
+			)
+		).map(value => `${(value * 100).toFixed()}%`)
 	}, {
 		key: "Rounds survived",
-		row: grouped.rounds
-			.map(rounds => getPlayerRoundsSurvived(rounds).length / (rounds.length || 1))
-			.map(value => `${(value * 100).toFixed()}%`)
+		row: toTableArray(
+			Object.fromEntries(
+				Object.keys(player.rounds)
+					.map(k => [k, player.stats.roundsSurvived[k].length / (player.rounds[k].length || 1)])
+			)
+		).map(value => `${(value * 100).toFixed()}%`)
 	}, {
 		key: "Rounds died first",
-		row: grouped.rounds
-			.map(rounds => getPlayerRoundsDiedFirst(rounds).length / (rounds.length || 1))
-			.map(value => `${(value * 100).toFixed()}%`)
+		row: toTableArray(
+			Object.fromEntries(
+				Object.keys(player.rounds)
+					.map(k => [k, player.stats.roundsDiedFirst[k].length / (player.rounds[k].length || 1)])
+			)
+		).map(value => `${(value * 100).toFixed()}%`)
 	}, {
 		key: "Kills",
-		row: grouped.kills.map(value => value.length)
+		row: toTableArray(player.stats.kills).map(kills => kills.length)
 	}, {
 		key: "Deaths",
-		row: grouped.deaths.map(value => value.length)
+		row: toTableArray(player.stats.deaths).map(deaths => deaths.length)
 	}, {
 		key: "K/D Ratio",
-		row: (() => {
-			const result = [];
-			for (let i = 0; i < groupCount; i++) {
-				result.push(getPlayerKDR(grouped.kills[i], grouped.deaths[i]).toFixed(2));
-			}
-			return result;
-		})()
+		row: toTableArray(player.stats.kdr)
+			.map(kdr => kdr.toFixed(2))
 	}, {
 		key: "Adjusted KDR",
-		row: (() => {
-			const result = [];
-			for (let i = 0; i < groupCount; i++) {
-				result.push(getPlayerAdjustedKDR(grouped.kills[i], grouped.deaths[i]).toFixed(2));
-			}
-			return result;
-		})(),
+		row: toTableArray(player.stats.kdrAdjusted)
+			.map(kdr => kdr.toFixed(2)),
 		tooltip: "Friendly-fire kills instead count as deaths"
 	}, {
 		key: "Headshot Kills",
-		row: grouped.kills
-			.map(kills => getPlayerHeadshotPercentage(kills))
+		row: toTableArray(player.stats.headshotPct)
 			.map(value => `${(value * 100).toFixed()}%`)
 	}, {
 		key: "Team Kills",
-		row: grouped.kills
-			.map(kills => getPlayerTeamKills(kills).length / (kills.length || 1))
-			.map(value => `${(value * 100).toFixed(1)}%`)
+		row: toTableArray(
+			Object.fromEntries(
+				Object.keys(player.stats.kills)
+					.map(k => [k, player.stats.teamKills[k].length / (player.stats.kills[k].length || 1)])
+			)
+		).map(value => `${(value * 100).toFixed(1)}%`)
 	}];
 </script>
 

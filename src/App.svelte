@@ -1,6 +1,6 @@
 <script>
 	import { fetchData, parseData } from "./js/data";
-	import { filterRounds } from "./js/eval";
+	import { filterRounds, evalRounds } from "./js/eval";
 
 	import { Router, Route, createHistory } from "svelte-navigator";
 	import createHashSource from "./js/hashHistory";
@@ -24,6 +24,11 @@
 		.catch(error => console.error(error));
 
 	$: rounds = data && filters && filterRounds(data.rounds, filters);
+	$: players = data && [...data.players.values()]
+		.filter(({ isBot }) => !isBot)
+		.sort((a, b) => a.name < b.name ? -1 : 1);
+
+	$: evalData = rounds && players && evalRounds(rounds, players);
 </script>
 
 {#await promise}
@@ -36,13 +41,13 @@
 			<Filters bind:filters />
 			{#if rounds}
 				<Route path="/*">
-					<Overview {rounds} />
+					<Overview {evalData} />
 				</Route>
 				<Route path="/players/*">
-					<Players {rounds} players={data.players} />
+					<Players {evalData} />
 				</Route>
 				<Route path="/leaderboards/*">
-					<Leaderboards />
+					<Leaderboards {evalData} />
 				</Route>
 			{/if}
 		</main>

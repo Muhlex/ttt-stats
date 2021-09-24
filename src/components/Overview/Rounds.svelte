@@ -5,37 +5,37 @@
 	import Chart from "chart.js/auto";
 	import ChartDataLabels from "chartjs-plugin-datalabels";
 
-	export let roundTotals;
+	export let totals;
 
 	let canvas;
 	let chart;
 
 	$: tableData = [{
 		key: "Rounds played",
-		value: roundTotals.rounds
+		value: totals.rounds
 	}, {
 		key: "Average round length",
-		value: toMMSS(roundTotals.playtime / roundTotals.rounds)
+		value: toMMSS(totals.playtime / totals.rounds)
 	}, {
 		key: "Innocent Wins",
 		value: (
-			Object.values(roundTotals.wins.innocent || { none: 0 }).reduce((acc, val) => acc + val) /
-			roundTotals.rounds * 100
+			Object.values(totals.wins.innocent || { none: 0 }).reduce((acc, val) => acc + val) /
+			totals.rounds * 100
 		).toFixed() + "%"
 	}, {
 		key: "Traitor Wins",
 		value: (
-			Object.values(roundTotals.wins.traitor || { none: 0 }).reduce((acc, val) => acc + val) /
-			roundTotals.rounds * 100
+			Object.values(totals.wins.traitor || { none: 0 }).reduce((acc, val) => acc + val) /
+			totals.rounds * 100
 		).toFixed() + "%"
 	}];
 
 	$: {
 		if (chart) {
 			chart.data.datasets[0].data = [
-				roundTotals.wins?.innocent?.death || 0,
-				roundTotals.wins?.innocent?.timelimit || 0,
-				roundTotals.wins?.traitor?.death || 0
+				totals.wins?.innocent?.death || 0,
+				totals.wins?.innocent?.timelimit || 0,
+				totals.wins?.traitor?.death || 0
 			];
 			chart.update();
 		}
@@ -60,7 +60,7 @@
 				plugins: {
 					datalabels: {
 						formatter(value) {
-							return (value / roundTotals.rounds * 100).toFixed() + "%";
+							return (value / totals.rounds * 100).toFixed() + "%";
 						}
 					}
 				}

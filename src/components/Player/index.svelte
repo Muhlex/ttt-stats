@@ -1,45 +1,11 @@
 <script>
-	import {
-		groupBy,
-		getPlayerRounds,
-		getPlayerKills,
-		getPlayerDeaths,
-		getPlayerItemCounts
-	} from "../../js/eval";
-
 	import PlayerTable from "./Table.svelte";
 	import Weapons from "./Weapons.svelte";
 	import Items from "./Items.svelte";
 
-	export let rounds, player;
+	export let evalData, guid;
 
-	$: r = (() => {
-		const any = getPlayerRounds(rounds, player.guid);
-		return {
-			any,
-			innocent: [],
-			traitor: [],
-			detective: [],
-			...groupBy((({ player }) => player.role), any)
-		};
-	})();
-	$: kills = {
-		any: getPlayerKills(r.any),
-		innocent: getPlayerKills(r.innocent),
-		traitor: getPlayerKills(r.traitor),
-		detective: getPlayerKills(r.detective)
-	};
-	$: deaths = {
-		any: getPlayerDeaths(r.any),
-		innocent: getPlayerDeaths(r.innocent),
-		traitor: getPlayerDeaths(r.traitor),
-		detective: getPlayerDeaths(r.detective)
-	};
-	$: items = {
-		traitor: [],
-		detective: [],
-		...groupBy("role", getPlayerItemCounts(r.any, player.guid))
-	};
+	$: player = evalData.players.find(p => p.guid === guid);
 </script>
 
 <h1>
@@ -48,18 +14,18 @@
 
 <div class="row">
 	<div class="left">
-		<PlayerTable rounds={r} {kills} {deaths} />
+		<PlayerTable {player} />
 		<div class="items">
 			<h2>Items</h2>
 			<h3>Traitor</h3>
-			<Items items={items.traitor} role="traitor" />
+			<Items items={player.stats.items.traitor} role="traitor" />
 			<h3>Detective</h3>
-			<Items items={items.detective} role="detective" />
+			<Items items={player.stats.items.detective} role="detective" />
 		</div>
 	</div>
 	<div class="weapons">
 		<h2>Weapons</h2>
-		<Weapons {kills} />
+		<Weapons weapons={player.stats.weapons} kills={player.stats.kills} />
 	</div>
 </div>
 

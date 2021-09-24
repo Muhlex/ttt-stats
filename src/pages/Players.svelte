@@ -3,21 +3,12 @@
 	import Link from "../components/Link.svelte";
 	import Player from "../components/Player/index.svelte";
 
-	import { isPlayerInRounds } from "../js/eval";
-
-	export let rounds, players;
-
-	$: playerList = [...players.values()]
-		.filter(({ isBot }) => !isBot)
-		.sort((a, b) => a.name < b.name ? -1 : 1);
-	$: playerListExtended = playerList.map(player => {
-		return { ...player, inRounds: isPlayerInRounds(rounds, player.guid) };
-	});
+	export let evalData;
 </script>
 
 <h2>Players</h2>
 <div class="player-list">
-	{#each playerListExtended as player}
+	{#each evalData.players as player}
 		<Link to={player.guid} class={!player.inRounds && "no-data"}>
 			{player.name}
 		</Link>
@@ -30,7 +21,7 @@
 	</div>
 </Route>
 <Route path=":guid" let:params>
-	<Player {rounds} player={players.get(params.guid)} />
+	<Player {evalData} guid={params.guid} />
 </Route>
 
 <style>
@@ -55,6 +46,7 @@
 	}
 	.player-list :global(a):hover {
 		background-color: rgb(var(--col-hover));
+		color: rgb(var(--col-bg));
 	}
 	.player-list :global(a.active) {
 		background-color: rgb(var(--col-active));
