@@ -19,7 +19,8 @@
 		tooltip: "Enemy kills ÷ (Deaths + Teamkills)",
 		placements: data.kdrAdjusted
 	}, {
-		title: "Headshots",
+		title: "Headshot Kills",
+		tooltip: "% of bullet weapon kills via headshots",
 		emoji: "🤯",
 		placements: data.headshotPct
 	}, {
@@ -48,7 +49,7 @@
 		placements: data.chatMessages
 	}, {
 		title: "Revolver.",
-		tooltip: "% of kills achieved with .44 Magnum",
+		tooltip: "Kills achieved with .44 Magnum",
 		emoji: "🔫",
 		placements: data.revolverKills
 	}, {

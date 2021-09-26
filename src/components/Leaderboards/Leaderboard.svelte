@@ -1,5 +1,6 @@
 <script>
 	import { createEventDispatcher } from "svelte";
+	import { slide } from "svelte/transition";
 
 	import Tooltip from "../Tooltip.svelte";
 
@@ -34,35 +35,35 @@
 			<span class="emoji">{emoji}</span>
 		{/if}
 	</h3>
-	{#if placements.length}
-		<div class="placements">
-			{#if !extended}
-				<div class="podium">
-					{#each placements.slice(0, 3) as { player, value }, i}
-						<div class="placement">
-							<span class="place">{getPlacement(i, placements)}</span>
-							<span class="name">{player.name}</span>
-							<span class="value">{value}<span>
-						</div>
-					{/each}
-				</div>
-			{:else}
-				<div class="other">
-					{#each placements as { player, value }, i}
-						<div class="placement">
-							<span class="place">{getPlacement(i, placements)}</span>
-							<span class="name">{player.name}</span>
-							<span class="value">{value}<span>
-						</div>
-					{/each}
+	<div class="placements">
+			{#if placements.length}
+				{#if !extended}
+					<div class="podium" transition:slide|local>
+						{#each placements.slice(0, 3) as { player, value }, i}
+							<div class="placement">
+								<span class="place">{getPlacement(i, placements)}</span>
+								<span class="name">{player.name}</span>
+								<span class="value">{value}<span>
+							</div>
+						{/each}
+					</div>
+				{:else}
+					<div class="other" transition:slide|local>
+						{#each placements as { player, value }, i}
+							<div class="placement">
+								<span class="place">{getPlacement(i, placements)}</span>
+								<span class="name">{player.name}</span>
+								<span class="value">{value}<span>
+							</div>
+						{/each}
+					</div>
+				{/if}
+			{:else if extended}
+				<div class="no-data" transition:slide|local>
+					No data available.
 				</div>
 			{/if}
 		</div>
-	{:else if extended}
-		<div class="placements no-data">
-			No data available.
-		</div>
-	{/if}
 </button>
 
 <style>
@@ -140,7 +141,7 @@
 	}
 
 	.other {
-		display: table;
+		/* display: table; */
 		border-collapse: collapse;
 		width: 100%;
 	}
@@ -166,7 +167,7 @@
 		width: 50%;
 	}
 
-	.placements.no-data {
+	.no-data {
 		padding: 1em;
 	}
 </style>
