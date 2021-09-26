@@ -16,6 +16,7 @@
 	.tooltip-parent {
 		position: relative;
 		text-decoration: underline dotted;
+		text-underline-offset: 0.125em;
 	}
 	.tooltip {
 		position: absolute;
