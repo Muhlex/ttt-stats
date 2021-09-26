@@ -8,7 +8,7 @@
 >
 	<slot />
 	<span class="tooltip">
-		{text}
+		{@html text}
 	</span>
 </div>
 
@@ -39,7 +39,7 @@
 		transition-property: opacity, transform;
 	}
 	.tooltip-parent:hover .tooltip,
-	.tooltip-parent:focus .tooltip {
+	.tooltip-parent:focus-visible .tooltip {
 		pointer-events: all;
 		opacity: 1;
 		transform: var(--base-transform);

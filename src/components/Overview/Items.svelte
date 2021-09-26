@@ -106,7 +106,8 @@
 		transition: 300ms ease;
 		transition-property: background-color;
 	}
-	.item-select-role button:hover {
+	.item-select-role button:hover,
+	.item-select-role button:focus-visible {
 		background-color: rgb(var(--col-btn-bg-hover));
 	}
 	.item-select-role button.active {

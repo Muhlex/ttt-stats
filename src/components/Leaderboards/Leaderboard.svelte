@@ -5,8 +5,16 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let title, tooltip, emoji, placements;
+	export let title, tooltip = null, emoji = null, placements = [];
 	export let extended;
+
+	function getPlacement(index, placements) {
+		const value = placements[index].value;
+		let i = placements.slice(0, index).findIndex(p => value === p.value);
+		if (i === -1) i = index;
+
+		return i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1 + ".";
+	}
 </script>
 
 <button
@@ -14,7 +22,7 @@
 	class:extended
 	on:click={dispatch("extend", !extended)}
 >
-	<h2>
+	<h3>
 		{#if tooltip}
 			<Tooltip text={tooltip}>
 				<span class="title">{title}</span>
@@ -25,29 +33,36 @@
 		{#if emoji}
 			<span class="emoji">{emoji}</span>
 		{/if}
-	</h2>
-	<div class="placements">
-		<div class="podium">
-			{#each placements.slice(0, 3) as { player, value }, i}
-				<div class="placement">
-					<span class="index">{["🥇", "🥈", "🥉"][i]}</span>
-					<span class="name">{player.name}:</span>
-					<span class="value">{value}<span>
+	</h3>
+	{#if placements.length}
+		<div class="placements">
+			{#if !extended}
+				<div class="podium">
+					{#each placements.slice(0, 3) as { player, value }, i}
+						<div class="placement">
+							<span class="place">{getPlacement(i, placements)}</span>
+							<span class="name">{player.name}</span>
+							<span class="value">{value}<span>
+						</div>
+					{/each}
 				</div>
-			{/each}
+			{:else}
+				<div class="other">
+					{#each placements as { player, value }, i}
+						<div class="placement">
+							<span class="place">{getPlacement(i, placements)}</span>
+							<span class="name">{player.name}</span>
+							<span class="value">{value}<span>
+						</div>
+					{/each}
+				</div>
+			{/if}
 		</div>
-		{#if extended}
-			<div class="other">
-				{#each placements.slice(3) as { player, value }, i}
-					<div class="placement">
-						<span class="index">{i + 4}.</span>
-						<span class="name">{player.name}</span>
-						<span class="value">{value}<span>
-					</div>
-				{/each}
-			</div>
-		{/if}
-	</div>
+	{:else if extended}
+		<div class="placements no-data">
+			No data available.
+		</div>
+	{/if}
 </button>
 
 <style>
@@ -69,7 +84,8 @@
 
 		transition: background-color 200ms ease;
 	}
-	.leaderboard h2 {
+	.leaderboard h3 {
+		margin: 0;
 		transition: color 200ms ease;
 	}
 	.leaderboard:hover,
@@ -79,40 +95,48 @@
 	.leaderboard.extended {
 		background-color: rgb(var(--col-active));
 	}
-	.leaderboard:hover h2,
-	.leaderboard:focus-visible h2,
-	.leaderboard.extended h2 {
+	.leaderboard:hover h3,
+	.leaderboard:focus-visible h3,
+	.leaderboard.extended h3 {
 		color: rgb(var(--col-bg))
 	}
 
-	.leaderboard h2 {
+	.leaderboard h3 {
 		display: flex;
 		justify-content: space-between;
 	}
 
 	.placements {
 		background-color: rgb(var(--col-bg));
-		margin: 0 -1em -1em;
+		margin: 1em -1em -1em;
 	}
 
 	.placement {
 		padding: 1em;
 		width: 100%;
 	}
+	.placement .place {
+		font-variant-numeric: oldstyle-nums;
+	}
 	.placement .value {
 		font-weight: 600;
+		font-variant-numeric: tabular-nums;
 	}
 
 	.podium {
 		display: flex;
 	}
-
+	.podium .placement {
+		display: inline-flex;
+	}
 	.podium .placement + .placement {
 		border-left: 2px solid rgb(var(--col-bg1));
 	}
-
+	.podium .place {
+		margin-right: 0.5em;
+	}
 	.podium .value {
-		margin-left: 0.5em;
+		margin-left: auto;
 	}
 
 	.other {
@@ -120,7 +144,6 @@
 		border-collapse: collapse;
 		width: 100%;
 	}
-
 	.other .placement {
 		display: table-row;
 		border-top: 2px solid rgb(var(--col-bg1));
@@ -129,8 +152,7 @@
 		display: table-cell;
 		padding: 0.5em 1em;
 	}
-
-	.other .index {
+	.other .place {
 		display: table-cell;
 		text-align: right;
 		min-width: 3ch;
@@ -142,5 +164,9 @@
 	.other .value {
 		text-align: right;
 		width: 50%;
+	}
+
+	.placements.no-data {
+		padding: 1em;
 	}
 </style>

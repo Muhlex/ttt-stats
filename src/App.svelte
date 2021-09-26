@@ -26,9 +26,10 @@
 	$: rounds = data && filters && filterRounds(data.rounds, filters);
 	$: players = data && [...data.players.values()]
 		.filter(({ isBot }) => !isBot)
-		.sort((a, b) => a.name < b.name ? -1 : 1);
+		.sort((a, b) => a.name.localeCompare(b.name));
 
 	$: evalData = rounds && players && evalRounds(rounds, players);
+	$: console.log(evalData);
 </script>
 
 {#await promise}
@@ -47,7 +48,7 @@
 					<Players {evalData} />
 				</Route>
 				<Route path="/leaderboards/*">
-					<Leaderboards {evalData} />
+					<Leaderboards data={evalData.leaderboards} />
 				</Route>
 			{/if}
 		</main>

@@ -34,7 +34,7 @@ export function parseData(text) {
 					date: getDate(text),
 					players: roundPlayers,
 					outcome: getOutcome(text),
-					events: getEvents(text, roundPlayers)
+					events: getEvents(text, roundPlayers, players)
 				};
 			})
 			.filter(({ players, outcome }) => players.length && outcome)

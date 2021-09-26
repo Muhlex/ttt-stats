@@ -122,6 +122,7 @@
 	}
 	table td {
 		text-align: center;
+		font-variant-numeric: tabular-nums;
 	}
 	table th[scope=row] {
 		padding: 0;

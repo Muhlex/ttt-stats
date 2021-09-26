@@ -60,11 +60,22 @@ function getItemBuyEvent(text, players) {
 	if (!result) return null;
 
 	const [, timeRaw, guid, item] = result;
-	const player = players.find(player => guid === player.guid);
+	const player = players.find(player => player.guid === guid);
 	return { type: "item-buy", time: logTimeToSeconds(timeRaw), player, item };
 }
 
-export function getEvents(text, players) {
+function getChatEvent(text, players, playerMap) {
+	const result = text.match(/ *(\d*:\d*) say;(.*?);.*?;.*?;(.*)/);
+	if (!result) return null;
+
+	const [, timeRaw, guid, messageRaw] = result;
+	const player = players.find(player => player.guid === guid) || playerMap.get(guid) || { guid };
+	const messageType = messageRaw[0] === "\u0014" ? "quickmessage" : "chat";
+	const message = ["\u0014", "\u0015"].includes(messageRaw[0]) ? messageRaw.slice(1) : messageRaw;
+	return { type: "say", time: logTimeToSeconds(timeRaw), player, message, messageType };
+}
+
+export function getEvents(text, players, playerMap) {
 	const result = text.match(/\n *(\d*:\d*) TTT_ROUND_START.*\n((?:.|\n)*?)\n *(\d*:\d*) TTT_ROUND_END/);
 	if (!result) return null;
 
@@ -75,6 +86,7 @@ export function getEvents(text, players) {
 	const events = eventsText.split("\n").map(eventText => {
 		return getDamageEvent(eventText, players) ||
 			getItemBuyEvent(eventText, players) ||
+			getChatEvent(eventText, players, playerMap) ||
 			null;
 	}).filter(event => event).flat(1);
 

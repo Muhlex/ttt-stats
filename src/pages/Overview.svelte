@@ -1,5 +1,5 @@
 <script>
-	import { groupBy } from "../js/eval";
+	import { groupBy } from "../js/util";
 
 	import Rounds from "../components/Overview/Rounds.svelte";
 	import Items from "../components/Overview/Items.svelte";
