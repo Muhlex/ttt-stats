@@ -111,7 +111,7 @@
 			placements: data.traitorRoundWinTime
 		}, {
 			title: "Slowpoke",
-			tooltip: "% of traitor rounds lost by timelimit",
+			tooltip: "Traitor rounds lost by timelimit",
 			emoji: "🐌",
 			placements: data.traitorRoundsLostTimelimitCount
 		}, {
