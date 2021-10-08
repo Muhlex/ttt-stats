@@ -54,16 +54,22 @@ input, button, select {
 	font-family: inherit;
 }
 
+h1, h2, h3, h4, h5, h6 {
+	margin-top: 1.5em;
+}
+
+h1 { font-size: 2em }
+h2 { font-size: 1.5em }
+h3 { font-size: 1.125em }
+h4 { font-size: 0.875em }
+h5 { font-size: 0.75em }
+h6 { font-size: 0.625em }
+
 h1:focus, h2:focus, h3:focus, h4:focus, h5:focus, h6:focus {
 	/* Svelte Navigator focuses headlines for accessibility. */
 	outline: none;
 }
 
-h1:first-child,
-h2:first-child,
-h3:first-child,
-h4:first-child,
-h5:first-child,
-h6:first-child {
+h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child, h6:first-child {
 	margin-top: 0;
 }

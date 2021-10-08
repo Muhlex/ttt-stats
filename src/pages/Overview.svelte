@@ -7,5 +7,11 @@
 	export let evalData;
 </script>
 
-<Rounds totals={evalData.totals} />
-<Items items={groupBy("role", evalData.items)} />
+<section class="overview">
+	<Rounds totals={evalData.totals} />
+	<Items items={groupBy("role", evalData.items)} />
+</section>
+
+<style>
+	section { margin-top: 2em }
+</style>

@@ -31,6 +31,8 @@
 
 
 <style>
+	h1 { margin-top: 1em }
+
 	small {
 		font-weight: normal;
 		font-size: 0.5em;
@@ -49,6 +51,10 @@
 		overflow: hidden; /* somehow chart.js requires this */
 		flex-basis: 500px;
 		flex-grow: 1;
+	}
+
+	.items {
+		margin: 2em 0;
 	}
 
 	.weapons {

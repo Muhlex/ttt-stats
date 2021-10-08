@@ -29,7 +29,7 @@
 		.sort((a, b) => a.name.localeCompare(b.name));
 
 	$: evalData = rounds && players && evalRounds(rounds, players);
-	$: console.log(evalData);
+	// $: console.log(evalData);
 </script>
 
 {#await promise}

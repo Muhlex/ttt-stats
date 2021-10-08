@@ -75,7 +75,7 @@ module.exports = {
 		"no-unused-vars": ["warn", {
 			vars: "all", args: "after-used", ignoreRestSiblings: false, argsIgnorePattern: "^_"
 		}],
-		"no-unused-expressions": "error",
+		"no-unused-expressions": ["error", { "allowTernary": true }],
 		"no-useless-call": "error",
 		"no-useless-concat": "error",
 		"no-useless-return": "error",

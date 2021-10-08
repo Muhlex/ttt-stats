@@ -21,7 +21,7 @@
 <button
 	class="leaderboard"
 	class:extended
-	on:click={dispatch("extend", !extended)}
+	on:click={() => dispatch("extend", !extended)}
 >
 	<h3>
 		{#if tooltip}
@@ -58,8 +58,8 @@
 						{/each}
 					</div>
 				{/if}
-			{:else if extended}
-				<div class="no-data" transition:slide|local>
+			{:else}
+				<div class="no-data">
 					No data available.
 				</div>
 			{/if}
@@ -74,14 +74,12 @@
 		text-align: left;
 		user-select: auto;
 
-		max-width: 800px;
-		margin: 0 auto;
-		margin-bottom: 1em;
-
 		padding: 1em;
 		color: rgb(var(--col-text));
 		background-color: rgb(var(--col-bg1));
 		border: 2px solid transparent;
+
+		scroll-margin-bottom: 128px;
 
 		transition: background-color 200ms ease;
 	}
@@ -119,6 +117,11 @@
 	.placement .place {
 		font-variant-numeric: oldstyle-nums;
 	}
+	.placement .name {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 	.placement .value {
 		font-weight: 600;
 		font-variant-numeric: tabular-nums;
@@ -135,6 +138,12 @@
 	}
 	.podium .place {
 		margin-right: 0.5em;
+	}
+	.podium .name {
+		margin-right: 0.5em;
+
+		flex-grow: 1;
+		width: 0;
 	}
 	.podium .value {
 		margin-left: auto;
@@ -169,5 +178,6 @@
 
 	.no-data {
 		padding: 1em;
+		font-style: italic;
 	}
 </style>

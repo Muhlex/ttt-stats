@@ -1,12 +1,19 @@
-import { groupBy } from "./util";
+import { groupBy, toMMSS } from "./util";
 
-export function filterRounds(rounds, { minPlayers, maxPlayers, minDate, maxDate }) {
+export const options = {
+	leaderboards: {
+		minRounds: 50,
+		maxDaysSinceLastSeen: 90
+	}
+};
+
+export function filterRounds(rounds, filters) {
 	return rounds.filter(({ players, date }) => {
 		return (
-			(typeof minPlayers !== "number" || players.length >= minPlayers) &&
-			(typeof maxPlayers !== "number" || players.length <= maxPlayers) &&
-			(minDate === null || isNaN(minDate) || date >= minDate) &&
-			(maxDate === null || isNaN(maxDate) || date <= maxDate)
+			(typeof filters.players.min !== "number" || players.length >= filters.players.min) &&
+			(typeof filters.players.max !== "number" || players.length <= filters.players.max) &&
+			(filters.date.min === null || isNaN(filters.date.min) || date >= filters.date.min) &&
+			(filters.date.max === null || isNaN(filters.date.max) || date <= filters.date.max)
 		);
 	});
 }
@@ -19,7 +26,13 @@ export function evalRounds(rounds, players) {
 		totals: getRoundTotals(rounds),
 		items: getRoundItems(rounds),
 		players: playerData,
-		leaderboards: evalLeaderboards(playerData)
+		leaderboards: evalLeaderboards(playerData.filter(player => {
+			const lastRoundDate = rounds[rounds.length - 1]?.date;
+			const lastSeenDate = player.rounds.any[player.rounds.any.length - 1]?.date;
+			const daysSinceLastSeen = (lastRoundDate - (lastSeenDate || 0)) / (1000 * 60 * 60 * 24);
+			const { leaderboards: { minRounds, maxDaysSinceLastSeen } } = options;
+			return player.rounds.any.length >= minRounds || daysSinceLastSeen <= maxDaysSinceLastSeen;
+		}))
 	};
 }
 
@@ -48,26 +61,30 @@ function evalPlayers(rounds, players) {
 		const kills = getGroupedValue(getPlayerKills, [playedRoundsGrouped]);
 		const hitscanKills = getGroupedValue(getPlayerHitscanKills, [kills]);
 		const deaths = getGroupedValue(getPlayerDeaths, [playedRoundsGrouped]);
+		const roundsWon = getGroupedValue(getPlayerRoundsWon, [playedRoundsGrouped]);
 
 		return {
 			...p,
 			rounds: playedRoundsGrouped,
 			inRounds: isPlayerInRounds(playedRounds, p.guid),
 			stats: {
-				kills,
-				hitscanKills,
-				deaths,
 				playtime: getGroupedValue(getPlayerPlaytime, [playedRoundsGrouped]),
-				roundsWon: getGroupedValue(getPlayerRoundsWon, [playedRoundsGrouped]),
+				roundsWon,
 				roundsSurvived: getGroupedValue(getPlayerRoundsSurvived, [playedRoundsGrouped]),
 				roundsDiedFirst: getGroupedValue(getPlayerRoundsDiedFirst, [playedRoundsGrouped]),
+				roundsFirstBlood: getGroupedValue(getPlayerRoundsFirstBlood, [playedRoundsGrouped]),
+				kills,
+				hitscanKills,
+				teamKills: getGroupedValue(getPlayerTeamKills, [kills]),
+				explosiveKills: getGroupedValue(getPlayerExplosiveKills, [kills]),
+				environmentalKills: getGroupedValue(getPlayerEnvironmentalKills, [kills]),
+				multiKills: getGroupedValue(getPlayerMultiKills, [playedRoundsGrouped]),
+				aces: getGroupedValue(getPlayerAces, [roundsWon]),
+				deaths,
+				suicides: getGroupedValue(getPlayerSuicides, [deaths]),
 				kdr: getGroupedValue(getPlayerKDR, [kills, deaths]),
 				kdrAdjusted: getGroupedValue(getPlayerAdjustedKDR, [kills, deaths]),
 				headshotPct: getGroupedValue(getPlayerHeadshotPercentage, [hitscanKills]),
-				teamKills: getGroupedValue(getPlayerTeamKills, [kills]),
-				explosiveKills: getGroupedValue(getPlayerExplosiveKills, [kills]),
-				multiKills: getGroupedValue(getPlayerMultiKills, [playedRoundsGrouped]),
-				suicides: getGroupedValue(getPlayerSuicides, [deaths]),
 				chatMessages: getGroupedValue(getPlayerChatMessages, [playedRoundsGrouped]),
 				items: {
 					traitor: [],
@@ -83,13 +100,13 @@ function evalPlayers(rounds, players) {
 function evalLeaderboards(players) {
 	return {
 		kills: [...players]
-			.filter(player => player.stats.kills.any.length > 0)
-			.sort((a, b) => b.stats.kills.any.length - a.stats.kills.any.length)
-			.map(player => ({ player, value: player.stats.kills.any.length })),
+			.map(player => ({ player, value: player.stats.kills.any.length }))
+			.filter(({ value }) => value > 0)
+			.sort((a, b) => b.value - a.value),
 		deaths: [...players]
-			.filter(player => player.stats.deaths.any.length > 0)
-			.sort((a, b) => b.stats.deaths.any.length - a.stats.deaths.any.length)
-			.map(player => ({ player, value: player.stats.deaths.any.length })),
+			.map(player => ({ player, value: player.stats.deaths.any.length }))
+			.filter(({ value }) => value > 0)
+			.sort((a, b) => b.value - a.value),
 		kdrAdjusted: [...players]
 			.filter(player => player.stats.kills.any.length > 0)
 			.sort((a, b) => b.stats.kdrAdjusted.any - a.stats.kdrAdjusted.any)
@@ -107,10 +124,25 @@ function evalLeaderboards(players) {
 			.filter(({ value }) => value > 0)
 			.sort((a, b) => b.value - a.value)
 			.map(({ player, value }) => ({ player, value: (value * 100).toFixed(1) + "%" })),
+		multiKills: [...players]
+			.map(player => ({ player, value: player.stats.multiKills.any.length }))
+			.filter(({ value }) => value > 0)
+			.sort((a, b) => b.value - a.value),
+		bombMultiKills: [...players]
+			.map(player => ({
+				player,
+				value: player.stats.multiKills.any.filter(([k]) => k.weapon === "briefcase_bomb_mp").length
+			}))
+			.filter(({ value }) => value > 0)
+			.sort((a, b) => b.value - a.value),
 		explosiveKills: [...players]
-			.filter(player => player.stats.explosiveKills.any.length > 0)
-			.sort((a, b) => b.stats.explosiveKills.any.length - a.stats.explosiveKills.any.length)
-			.map(player => ({ player, value: player.stats.explosiveKills.any.length })),
+			.map(player => ({ player, value: player.stats.explosiveKills.any.length }))
+			.filter(({ value }) => value > 0)
+			.sort((a, b) => b.value - a.value),
+		environmentalKills: [...players]
+			.map(player => ({ player, value: player.stats.environmentalKills.any.length }))
+			.filter(({ value }) => value > 0)
+			.sort((a, b) => b.value - a.value),
 		revolverKills: [...players]
 			.map(player => ({
 				player,
@@ -118,18 +150,54 @@ function evalLeaderboards(players) {
 			}))
 			.filter(({ value }) => value > 0)
 			.sort((a, b) => b.value - a.value),
-		suicides: [...players]
-			.filter(player => player.stats.suicides.any.length > 0)
-			.sort((a, b) => b.stats.suicides.any.length - a.stats.suicides.any.length)
-			.map(player => ({ player, value: player.stats.suicides.any.length })),
-		attackHeliSuicides: [...players]
+		rpgDirectHitKills: [...players]
 			.map(player => ({
 				player,
-				value: player.stats.kills.any.filter(({ weapon }) => weapon === "cobra_20mm_mp").length
+				value: player.stats.kills.any.filter(({ weapon, means }) => {
+					return weapon === "rpg_mp" && means === "MOD_PROJECTILE";
+				}).length
 			}))
 			.filter(({ value }) => value > 0)
 			.sort((a, b) => b.value - a.value),
-		noItemsWonRoundCount: [...players]
+		suicides: [...players]
+			.map(player => ({ player, value: player.stats.suicides.any.length }))
+			.filter(({ value }) => value > 0)
+			.sort((a, b) => b.value - a.value),
+		fallingSuicides: [...players]
+			.map(player => ({
+				player,
+				value: player.stats.suicides.any.filter(({ means }) => {
+					return ["MOD_FALLING", "MOD_TRIGGER_HURT"].includes(means);
+				}).length
+			}))
+			.filter(({ value }) => value > 0)
+			.sort((a, b) => b.value - a.value),
+		attackHeliSuicides: [...players]
+			.map(player => ({
+				player,
+				value: player.stats.suicides.any.filter(({ weapon }) => weapon === "cobra_20mm_mp").length
+			}))
+			.filter(({ value }) => value > 0)
+			.sort((a, b) => b.value - a.value),
+		traitorRoundWinTime: [...players]
+			.map(player => ({
+				player,
+				value:
+					player.stats.roundsWon.traitor.reduce((result, { outcome: { roundLength } }) => {
+						return roundLength < result ? roundLength : result;
+					}, Infinity)
+			}))
+			.filter(({ value }) => value < Infinity)
+			.sort((a, b) => a.value - b.value)
+			.map(({ player, value }) => ({ player, value: toMMSS(value) })),
+		traitorRoundsLostTimelimitCount: [...players]
+			.map(player => ({
+				player,
+				value: player.rounds.traitor.filter(round => round.outcome.reason === "timelimit").length
+			}))
+			.filter(({ value }) => value > 0)
+			.sort((a, b) => b.value - a.value),
+		traitorNoItemsWonRoundCount: [...players]
 			.map(player => {
 				const guid = player.guid;
 				const value = player.rounds.traitor.filter(({ events, outcome }) => {
@@ -143,14 +211,27 @@ function evalLeaderboards(players) {
 			})
 			.filter(({ value }) => value > 0)
 			.sort((a, b) => b.value - a.value),
+		traitorRoundsFirstBlood: [...players]
+			.map(player => ({
+				player,
+				value:
+					player.stats.roundsFirstBlood.traitor.length / (player.rounds.traitor.length || 1)
+			}))
+			.filter(({ value }) => value > 0)
+			.sort((a, b) => b.value - a.value)
+			.map(({ player, value }) => ({ player, value: (value * 100).toFixed(1) + "%" })),
+		traitorRoundsAced: [...players]
+			.map(player => ({ player, value: player.stats.aces.traitor.length }))
+			.filter(({ value }) => value > 0)
+			.sort((a, b) => b.value - a.value),
 		radarsBoughtPct: [...players]
+			.filter(player => player.stats.items.traitor.length > 0)
 			.map(player => {
 				const items = player.stats.items.traitor;
 				const radarCount = items.find(({ name }) => name === "RADAR")?.count || 0;
 				const totalCount = items.reduce((total, { count }) => total + count, 0);
 				return { player, value: radarCount / (totalCount || 1) };
 			})
-			.filter(({ value }) => value > 0)
 			.sort((a, b) => b.value - a.value)
 			.map(({ player, value }) => ({ player, value: (value * 100).toFixed(1) + "%" })),
 		chatMessages: [...players]
@@ -236,6 +317,13 @@ function getPlayerRoundsDiedFirst(playerRounds) {
 	});
 }
 
+function getPlayerRoundsFirstBlood(playerRounds) {
+	return playerRounds.filter(({ events, player }) => {
+		const deaths = events.filter(({ type }) => type === "death");
+		return deaths[0]?.attacker?.guid === player.guid && deaths[0]?.victim.guid !== player.guid;
+	});
+}
+
 function getPlayerPlaytime(playerRounds) {
 	return playerRounds.reduce((total, { outcome: { roundLength } }) => total + roundLength, 0);
 }
@@ -307,21 +395,34 @@ function getPlayerExplosiveKills(kills) {
 	].includes(means));
 }
 
-function getPlayerMultiKills(rounds) {
+function getPlayerEnvironmentalKills(kills) {
+	return kills.filter(({ weapon }) => ["barrel_mp", "destructible_car"].includes(weapon));
+}
+
+function getPlayerMultiKills(playerRounds) {
 	const maxTimeDiff = 5;
 
-	// TODO: dont have multiple multi kills in one array... nest it
-
-	return rounds.map(round => {
-		const multiKills = [];
-		getPlayerKills([round]).forEach((kill, i, { [i - 1]: prevKill }) => {
+	return playerRounds.flatMap(round => {
+		const kills = getPlayerKills([round]);
+		return kills.reduce((r, kill, i, { [i - 1]: prevKill, [i + 1]: nextKill }) => {
+			const multiKill = r[r.length - 1];
 			if (prevKill && kill.time - maxTimeDiff <= prevKill.time) {
-				if (!multiKills.includes(prevKill)) multiKills.push(prevKill);
-				multiKills.push(kill);
+				if (!multiKill.includes(prevKill)) multiKill.push(prevKill);
+				multiKill.push(kill);
+			} else if (nextKill && (!multiKill || multiKill.length > 0)) {
+				r.push([]);
 			}
-		});
-		return multiKills;
-	}).filter(multiKills => multiKills.length > 0);
+			return r;
+		}, []);
+	}).filter(roundMultiKills => roundMultiKills.length > 0);
+}
+
+function getPlayerAces(playerRoundsWon) {
+	return playerRoundsWon.filter(round => {
+		const kills = getPlayerKills([round]);
+		const enemies = round.players.filter(({ role }) => getRoleTeam(role) !== getRoleTeam(round.player.role));
+		return kills.length === enemies.length;
+	});
 }
 
 function getPlayerWeaponStats(kills) {
