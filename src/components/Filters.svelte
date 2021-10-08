@@ -66,7 +66,16 @@
 					style="width: calc(2ch + 32px);"
 				>
 			</div>
+			<div class="row">
+				<button on:click={() => {
+					filters.players.min = 6;
+					filters.players.max = 18;
+				}}>
+					Reset to Default
+				</button>
+			</div>
 		</div>
+
 		<div class="filter">
 			<h3>📅 Date</h3>
 			<div class="row">
@@ -111,7 +120,7 @@
 					setDate("min", null);
 					setDate("max", new Date());
 				}}>
-					all time
+					All Time
 				</button>
 				<button on:click={() => {
 					const threeMonthsAgo = new Date();
@@ -119,7 +128,7 @@
 					setDate("min", threeMonthsAgo);
 					setDate("max", new Date());
 				}}>
-					last 3 months
+					Last 3 Months
 				</button>
 				<button on:click={() => {
 					const yesterday = new Date();
