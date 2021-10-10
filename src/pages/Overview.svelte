@@ -4,12 +4,12 @@
 	import Rounds from "../components/Overview/Rounds.svelte";
 	import Items from "../components/Overview/Items.svelte";
 
-	export let evalData;
+	export let dataEvaled;
 </script>
 
 <section class="overview">
-	<Rounds totals={evalData.totals} />
-	<Items items={groupBy("role", evalData.items)} />
+	<Rounds totals={dataEvaled.totals} />
+	<Items items={groupBy("role", dataEvaled.items)} />
 </section>
 
 <style>

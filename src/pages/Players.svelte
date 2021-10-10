@@ -3,13 +3,13 @@
 	import Link from "../components/Link.svelte";
 	import Player from "../components/Player/index.svelte";
 
-	export let evalData;
+	export let dataEvaled;
 </script>
 
 <section class="players">
 	<h2>Players</h2>
 	<div class="player-list">
-		{#each evalData.players as player}
+		{#each dataEvaled.players as player}
 			<Link to={player.guid} class={!player.inRounds && "no-data"}>
 				{player.name}
 			</Link>
@@ -22,7 +22,7 @@
 		</div>
 	</Route>
 	<Route path=":guid" let:params>
-		<Player {evalData} guid={params.guid} />
+		<Player {dataEvaled} guid={params.guid} />
 	</Route>
 </section>
 

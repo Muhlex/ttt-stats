@@ -3,9 +3,9 @@
 	import Weapons from "./Weapons.svelte";
 	import Items from "./Items.svelte";
 
-	export let evalData, guid;
+	export let dataEvaled, guid;
 
-	$: player = evalData.players.find(p => p.guid === guid);
+	$: player = dataEvaled.players.find(p => p.guid === guid);
 </script>
 
 <h1>

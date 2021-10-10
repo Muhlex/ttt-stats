@@ -18,7 +18,6 @@ export function filterRounds(rounds, filters) {
 	});
 }
 
-// TODO: Use a Web Worker for this
 export function evalRounds(rounds, players) {
 	const playerData = evalPlayers(rounds, players);
 	return {

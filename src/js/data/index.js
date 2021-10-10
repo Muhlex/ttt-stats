@@ -1,13 +1,8 @@
-import {
-	getDate,
-	getPlayers,
-	getOutcome,
-	getEvents
-} from "./rounds";
+import { getDate, getPlayers, getOutcome, getEvents } from "./rounds";
 import { getPlayerMetadata } from "./players";
 
-export async function fetchData() {
-	const res = await fetch(import.meta.env.VITE_LOG_ADDRESS);
+export async function fetchData(url) {
+	const res = await fetch(url);
 	const text = await res.text();
 	// let text = await import("../../dev.log?raw");
 	// text = text.default;
@@ -24,22 +19,22 @@ export function parseData(text) {
 			""
 		);
 
-		const players = getPlayerMetadata(log);
+		const playerMap = getPlayerMetadata(log);
 
 		const rounds = log
 			.match(/\d*:\d* InitGame(?:.|\n)*?ShutdownGame/g)
 			.map(text => {
-				const roundPlayers = getPlayers(text, players);
+				const roundPlayers = getPlayers(text, playerMap);
 				return {
 					date: getDate(text),
 					players: roundPlayers,
 					outcome: getOutcome(text),
-					events: getEvents(text, roundPlayers, players)
+					events: getEvents(text, roundPlayers, playerMap)
 				};
 			})
 			.filter(({ players, outcome }) => players.length && outcome)
 			.filter(({ players }) => players.every(({ isBot }) => !isBot));
 
-		resolve({ players, rounds });
+		resolve({ playerMap, rounds });
 	});
 }

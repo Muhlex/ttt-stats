@@ -1,9 +1,10 @@
 <script>
+	import { getWeaponDisplayName } from "../../js/data/weapons";
+
 	import { onMount } from "svelte";
 	import Chart from "chart.js/auto";
 	import ChartDataLabels from "chartjs-plugin-datalabels";
 
-	import { getWeaponDisplayName } from "../../js/data/weapons";
 
 	export let weapons, kills;
 
@@ -11,7 +12,6 @@
 
 	$: {
 		if (chart) {
-			// TODO: Make getWeaponDisplayName more performant.
 			chart.data.labels = weapons.map(({ name }) => getWeaponDisplayName(name));
 			chart.data.datasets[0].data = weapons.map(({ kills }) => kills);
 			chart.update();
