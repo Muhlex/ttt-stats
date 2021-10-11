@@ -43,7 +43,7 @@
 .loading-grid div:nth-child(2) { animation-delay: 300ms; }
 .loading-grid div:nth-child(3) { animation-delay: 400ms; }
 .loading-grid div:nth-child(4) { animation-delay: 100ms; }
-.loading-grid div:nth-child(5) { animation-delay: 200ms; }
+.loading-grid div:nth-child(5) { animation-delay: 200ms; animation-name: grid-scale-rotate; }
 .loading-grid div:nth-child(6) { animation-delay: 300ms; }
 .loading-grid div:nth-child(7) { animation-delay: 0ms; }
 .loading-grid div:nth-child(8) { animation-delay: 100ms; }
@@ -53,10 +53,19 @@
 	35%, 70% { transform: scale(5) }
 	0%, 100% { transform: scale(0) }
 }
+@keyframes grid-scale-rotate {
+	35%, 70% { transform: scale(5) }
+	69.9999% { transform: scale(5) rotate(180deg) }
+	0%, 100% { transform: scale(0) }
+}
 @media (prefers-reduced-motion: reduce) {
 	@keyframes grid-scale {
-	35%, 70% { transform: scale(1.5) }
-	0%, 100% { transform: scale(1) }
-}
+		35%, 70% { transform: scale(1.5) }
+		0%, 100% { transform: scale(1) }
+	}
+	@keyframes grid-scale-rotate {
+		35%, 70% { transform: scale(1.5) }
+		0%, 100% { transform: scale(1) }
+	}
 }
 </style>

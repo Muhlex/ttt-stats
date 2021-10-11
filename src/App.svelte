@@ -65,7 +65,7 @@
 
 			{#if evalState.status === "eval"}
 				<div class="eval-spinner" out:fade={{ duration: 200 }}>
-					<LoadingSpinner duration={750} />
+					<LoadingSpinner duration={1000} />
 				</div>
 			{/if}
 

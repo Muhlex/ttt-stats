@@ -106,7 +106,8 @@
 	}, {
 		heading: "Traitor Rounds",
 		boards: [{
-			title: "Fastest Traitor Round Win",
+			title: "Early Finisher",
+			tooltip: "Fastest round win as traitor",
 			emoji: "⏱️",
 			placements: data.traitorRoundWinTime
 		}, {
@@ -132,7 +133,7 @@
 		}, {
 			title: "Most Traitor Aces",
 			tooltip: "Rounds won by killing all innocent single-handedly",
-			emoji: "♠️",
+			emoji: "🎖️",
 			placements: data.traitorRoundsAced
 		}]
 	}, {
