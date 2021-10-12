@@ -12,9 +12,12 @@ export function toMMSS(seconds) {
 }
 
 export function chunk(array, size) {
+	const sizeInt = parseInt(size);
+	if (sizeInt === 0) throw new Error("Cannot chunk into chunks of 0 length.");
+
 	const result = [];
-	for (let i = 0; i < array.length; i += size) {
-		result.push(array.slice(i, i + size));
+	for (let i = 0; i < array.length; i += sizeInt) {
+		result.push(array.slice(i, i + sizeInt));
 	}
 	return result;
 }

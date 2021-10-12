@@ -1,5 +1,5 @@
 <script>
-	import FetchWorker from "./js/workers/data?worker";
+	import DataWorker from "./js/workers/data?worker";
 	import FilteredEvalWorker from "./js/workers/filteredEval?worker";
 
 	import { Router, Route, createHistory } from "svelte-navigator";
@@ -20,23 +20,24 @@
 	let dataParsed, dataEvaled;
 	let filters;
 	let filteredEvalWorker;
-	const loadState = { status: undefined, progress: undefined, error: undefined };
+	const loadState = { status: undefined, message: undefined, progress: undefined, error: undefined };
 	const evalState = { status: undefined };
 
-	const fetchWorker = new FetchWorker();
-	fetchWorker.onmessage = ({ data: { status, progress, data } }) => {
-		if (status) {
-			loadState.status = status;
-			loadState.progress = progress;
-		}
+	const dataWorker = new DataWorker();
+	dataWorker.onmessage = ({ data: { status, message, progress, data } }) => {
+		if (status) loadState.status = status;
+		if (message) loadState.message = message;
+		if (progress) loadState.progress = progress;
 		if (data) dataParsed = data;
-		if (status && status === "done") fetchWorker.terminate();
+
+		if (status === "done") dataWorker.terminate();
 	};
-	fetchWorker.onerror = ({ message }) => {
-		loadState.error = message;
+	dataWorker.onerror = ({ message }) => {
 		loadState.status = "error";
+		loadState.error = message;
+		dataWorker.terminate();
 	};
-	fetchWorker.postMessage({ url: import.meta.env.VITE_LOG_ADDRESS });
+	dataWorker.postMessage({ url: import.meta.env.VITE_LOG_ADDRESS });
 
 	$: {
 		if (dataParsed && filters) {
@@ -57,9 +58,9 @@
 {#if ["fetch", "parse"].includes(loadState.status) }
 	<Loading spinner>
 		<div class="loading-text">
-			{loadState.status === "fetch" ? "Downloading" : "Parsing"} data...
+			{loadState.message ?? "\u00a0"}
 			<div class="loading-progress">
-				{loadState.progress !== undefined ? (loadState.progress * 100).toFixed() + "%" : ""}
+				{loadState.progress ?? "\u00a0"}
 			</div>
 		</div>
 	</Loading>
@@ -118,11 +119,13 @@ h1 {
 .stats { transition: opacity 200ms ease }
 
 .loading-text {
-	font-weight: 600;
+	font-weight: bold;
+	text-align: center;
 }
 
 .loading-progress {
-	text-align: center;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
 }
 
 .eval-spinner {
