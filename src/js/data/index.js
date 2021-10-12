@@ -1,6 +1,3 @@
-import { getDate, getPlayers, getOutcome, getEvents } from "./rounds";
-import { getPlayerMetadata } from "./players";
-
 export async function fetchData(url) {
 	const res = await fetch(url);
 	const text = await res.text();
@@ -10,31 +7,12 @@ export async function fetchData(url) {
 	return text;
 }
 
-export function parseData(text) {
-	return new Promise(resolve => {
-		let log = text.replaceAll("\r", ""); // CRLF -> LF;
-		// Remove rounds where server was idle:
-		log = log.replace(
-			/.* -{20,}\n.*InitGame\n.*TTT_ROUND_START.*\n.*TTT_ROUND_END.*(?:.|\n)*?.*ShutdownGame.*\n.*-{20,}\n/g,
-			""
-		);
-
-		const playerMap = getPlayerMetadata(log);
-
-		const rounds = log
-			.match(/\d*:\d* InitGame(?:.|\n)*?ShutdownGame/g)
-			.map(text => {
-				const roundPlayers = getPlayers(text, playerMap);
-				return {
-					date: getDate(text),
-					players: roundPlayers,
-					outcome: getOutcome(text),
-					events: getEvents(text, roundPlayers, playerMap)
-				};
-			})
-			.filter(({ players, outcome }) => players.length && outcome)
-			.filter(({ players }) => players.every(({ isBot }) => !isBot));
-
-		resolve({ playerMap, rounds });
-	});
+export function pruneLog(text) {
+	let log = text.replaceAll("\r\n", "\n"); // CRLF -> LF;
+	// Remove rounds where server was idle:
+	log = log.replace(
+		/.* -{20,}\n.*InitGame\n.*TTT_ROUND_START.*\n.*TTT_ROUND_END.*(?:.|\n)*?.*ShutdownGame.*\n.*-{20,}\n/g,
+		""
+	);
+	return log;
 }

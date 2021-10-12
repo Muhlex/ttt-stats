@@ -10,3 +10,11 @@ export function toMMSS(seconds) {
 	return String(Math.floor(seconds / 60)).padStart(2, "0") + ":" +
 		String(Math.floor(seconds % 60)).padStart(2, "0");
 }
+
+export function chunk(array, size) {
+	const result = [];
+	for (let i = 0; i < array.length; i += size) {
+		result.push(array.slice(i, i + size));
+	}
+	return result;
+}

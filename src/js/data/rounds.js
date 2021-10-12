@@ -3,6 +3,28 @@ function logTimeToSeconds(timeString) {
 	return (Number(min) * 60) + Number(sec);
 }
 
+export function getRoundsRawText(text) {
+	return text.match(/\d*:\d* InitGame(?:.|\n)*?ShutdownGame/g);
+}
+
+export function parseRounds(roundsText, playerMap) {
+	return roundsText.map(text => {
+		const roundPlayers = getPlayers(text, playerMap);
+		return {
+			date: getDate(text),
+			players: roundPlayers,
+			outcome: getOutcome(text),
+			events: getEvents(text, roundPlayers, playerMap)
+		};
+	});
+}
+
+export function filterInvalidRounds(rounds) {
+	return rounds
+		.filter(({ players, outcome }) => players.length && outcome)
+		.filter(({ players }) => players.every(({ isBot }) => !isBot));
+}
+
 export function getDate(text) {
 	const result = text.match(/\n *\d*:\d* TTT_ROUND_START;(\d+)/);
 	if (!result) return null;
@@ -27,6 +49,29 @@ export function getOutcome(text) {
 	const [, winner, reason, roundLength] = result;
 	return { winner, reason, roundLength: Number(roundLength) };
 }
+
+export function getEvents(text, players, playerMap) {
+	const result = text.match(/\n *(\d*:\d*) TTT_ROUND_START.*\n((?:.|\n)*?)\n *(\d*:\d*) TTT_ROUND_END/);
+	if (!result) return null;
+
+	const [, startTimeRaw, eventsText, endTimeRaw] = result;
+	const startTime = logTimeToSeconds(startTimeRaw);
+	const endTime = logTimeToSeconds(endTimeRaw);
+
+	const events = eventsText.split("\n").map(eventText => {
+		return getDamageEvent(eventText, players) ||
+			getItemBuyEvent(eventText, players) ||
+			getChatEvent(eventText, players, playerMap) ||
+			null;
+	}).filter(event => event).flat(1);
+
+	return [
+		{ type: "round-start", time: startTime },
+		...events,
+		{ type: "round-end", time: endTime }
+	].map(event => ({ ...event, time: event.time - startTime }));
+}
+
 
 function getDamageEvent(text, players) {
 	const result = text.match(/ *(\d*:\d*) (D|K);(.*);.*;.*;.*;(.*);.*;.*;.*;(.*);(.*);(.*);(.*)/);
@@ -73,26 +118,4 @@ function getChatEvent(text, players, playerMap) {
 	const messageType = messageRaw[0] === "\u0014" ? "quickmessage" : "chat";
 	const message = ["\u0014", "\u0015"].includes(messageRaw[0]) ? messageRaw.slice(1) : messageRaw;
 	return { type: "say", time: logTimeToSeconds(timeRaw), player, message, messageType };
-}
-
-export function getEvents(text, players, playerMap) {
-	const result = text.match(/\n *(\d*:\d*) TTT_ROUND_START.*\n((?:.|\n)*?)\n *(\d*:\d*) TTT_ROUND_END/);
-	if (!result) return null;
-
-	const [, startTimeRaw, eventsText, endTimeRaw] = result;
-	const startTime = logTimeToSeconds(startTimeRaw);
-	const endTime = logTimeToSeconds(endTimeRaw);
-
-	const events = eventsText.split("\n").map(eventText => {
-		return getDamageEvent(eventText, players) ||
-			getItemBuyEvent(eventText, players) ||
-			getChatEvent(eventText, players, playerMap) ||
-			null;
-	}).filter(event => event).flat(1);
-
-	return [
-		{ type: "round-start", time: startTime },
-		...events,
-		{ type: "round-end", time: endTime }
-	].map(event => ({ ...event, time: event.time - startTime }));
 }

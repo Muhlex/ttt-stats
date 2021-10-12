@@ -20,12 +20,15 @@
 	let dataParsed, dataEvaled;
 	let filters;
 	let filteredEvalWorker;
-	const loadState = { status: undefined, error: undefined };
+	const loadState = { status: undefined, progress: undefined, error: undefined };
 	const evalState = { status: undefined };
 
 	const fetchWorker = new FetchWorker();
-	fetchWorker.onmessage = ({ data: { status, data } }) => {
-		if (status) loadState.status = status;
+	fetchWorker.onmessage = ({ data: { status, progress, data } }) => {
+		if (status) {
+			loadState.status = status;
+			loadState.progress = progress;
+		}
 		if (data) dataParsed = data;
 		if (status && status === "done") fetchWorker.terminate();
 	};
@@ -53,8 +56,11 @@
 
 {#if ["fetch", "parse"].includes(loadState.status) }
 	<Loading spinner>
-		<div class="loading-spinner-text">
+		<div class="loading-text">
 			{loadState.status === "fetch" ? "Downloading" : "Parsing"} data...
+			<div class="loading-progress">
+				{loadState.progress !== undefined ? (loadState.progress * 100).toFixed() + "%" : ""}
+			</div>
 		</div>
 	</Loading>
 {:else if loadState.status === "done"}
@@ -111,8 +117,12 @@ h1 {
 .stats.hidden { opacity: 0 }
 .stats { transition: opacity 200ms ease }
 
-.loading-spinner-text {
+.loading-text {
 	font-weight: 600;
+}
+
+.loading-progress {
+	text-align: center;
 }
 
 .eval-spinner {

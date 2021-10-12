@@ -2,7 +2,7 @@ function stripColors(str) {
 	return str.replace(/\^[\d:;]/g, "");
 }
 
-export function getPlayerMetadata(text) {
+export function parsePlayerMetadata(text) {
 	const map = new Map();
 	const players = [...text.matchAll(/\n *\d*:\d* J;(.*?);.*?;(.*)/g)];
 
