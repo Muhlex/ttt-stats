@@ -1,5 +1,5 @@
 export async function fetchData(url) {
-	const res = await fetch(url);
+	const res = await fetch(url, { cache: "no-cache" });
 	const text = await res.text();
 	// let text = await import("../../dev.log?raw");
 	// text = text.default;
