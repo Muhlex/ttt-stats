@@ -1203,5 +1203,6 @@ export default new Map(Object.entries({
 	"wa2000_thermal_mp": "WA2000 Thermal Sight",
 	"wa2000_thermal_xmags_mp": "WA2000 Bling",
 	"wa2000_xmags_mp": "WA2000 Extended Mags",
-	"winchester1200_mp": "W1200"
+	"winchester1200_mp": "W1200",
+	"iw5_mp7_mp": "MP7"
 }));
