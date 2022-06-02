@@ -1,6 +1,6 @@
 # Trouble in Terrorist Town — Statistics
 This is a tool to display comprehensive statistics from the
-[Trouble in Terrorist Town](https://github.com/Muhlex/iw4-mods/blob/main/docs/TTT.md)
+[Trouble in Terrorist Town](https://github.com/Muhlex/iw4x-ttt)
 custom gamemode for IW4X. It can be configured to read any log file
 created by the most recent version of the gamemode.
 The data will be parsed and evaluated directly in the browser.
