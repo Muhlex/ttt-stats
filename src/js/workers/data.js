@@ -1,5 +1,5 @@
 import { chunk } from "../util";
-import { fetchData, pruneLog } from "../data";
+import { fetchData, fixLineEndings } from "../data";
 import { parsePlayerMetadata } from "../data/players";
 import { getRoundsRawText, parseRounds, filterInvalidRounds } from "../data/rounds";
 
@@ -8,7 +8,7 @@ self.onmessage = async ({ data: { url } }) => {
 	const data = await fetchData(url);
 
 	self.postMessage({ status: "parse", message: "Parsing Data", progress: "Preparing" });
-	const log = pruneLog(data);
+	const log = fixLineEndings(data);
 	const playerMap = parsePlayerMetadata(log);
 	const roundsRawText = getRoundsRawText(log);
 	const roundTextChunks = chunk(roundsRawText, Math.max(roundsRawText.length / 100, 8));
