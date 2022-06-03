@@ -24,7 +24,7 @@
 		</div>
 	</div>
 	<div class="weapons">
-		<h2>Weapons</h2>
+		<h2>Weapon Kills</h2>
 		<Weapons weapons={player.stats.weapons} kills={player.stats.kills} />
 	</div>
 </div>
