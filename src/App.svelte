@@ -67,7 +67,7 @@
 {:else if loadState.status === "done"}
 	<Router history={hashHistory}>
 		<main>
-			<h1>Trouble in Terrorist Town &mdash; Statistics</h1>
+			<h1>Trouble in Taskforce Town &mdash; Statistics</h1>
 			<Filters bind:filters />
 
 			{#if evalState.status === "eval"}
